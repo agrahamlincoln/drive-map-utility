@@ -9,9 +9,11 @@ namespace drive_map_utility
     class ThisComputer
     {
         //Class variables
-        public List<NetworkDrive> currentlyMappedDrives = getCurrentlyMappedDrives();
+        public static List<NetworkDrive> currentlyMappedShares = getCurrentlyMappedDrives();
+        public static List<NetworkDrive> jsonUsersFile = json.getCurrentUserDrivesFromJson();
+        public static List<NetworkDrive> jsonKnownShares = json.getKnownSharesFromJson();
 
-        public static List<NetworkDrive> getCurrentlyMappedDrives()
+        private static List<NetworkDrive> getCurrentlyMappedDrives()
         {
             List<NetworkDrive> mappedDrives = new List<NetworkDrive>();
             try

@@ -139,8 +139,6 @@ namespace drive_map_utility
                 }
             }
             return versions;
-
-
         }
     }
 }

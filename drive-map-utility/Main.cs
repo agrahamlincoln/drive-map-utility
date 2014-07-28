@@ -20,12 +20,48 @@ namespace drive_map_utility
         }
 
         #region Form Controls
+
         private void mapSharesButton_Click(object sender, EventArgs e)
+        {
+            updateDrives();
+        }
+
+        private void addToMappedList_Click(object sender, EventArgs e)
+        {
+            MoveSelItem(knownList, mappedList);
+        }
+
+        private void removeFromMappedList_Click(object sender, EventArgs e)
+        {
+            MoveSelItem(mappedList, knownList);
+        }
+
+        private void addNewButton_Click(object sender, EventArgs e)
+        {
+            AddNewShare addNewForm = new AddNewShare();
+            addNewForm.Show();
+        }
+
+        private void Main_closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            updateDrives();
+        }
+
+        #endregion
+
+        #region Processes
+
+        private void updateDrives()
         {
             if (mappedList.Items.Count > 0)
             {
+                if (usernameTxtBox.Text != "" && passwordTxtBox.Text != "")
+                {
+
+                }
+
                 updateStatus("Figuring out what needs to be mapped");
-                List<NetworkDrive> fullList = enumerateSharesList(mappedList);
+                List<NetworkDrive> fullList = enumerateSharesfromListBox(mappedList);
                 foreach (NetworkDrive share in fullList)
                 {
                     //if the share is not currently mapped
@@ -33,24 +69,23 @@ namespace drive_map_utility
                     {
                         /*try
                         {*/
-                            share.PromptForCredentials = true;
-                            share.MapDrive();
-                       /* }
-                        catch
-                        {
-                            ProgramUtils.writeLog("Failed to map network drive: " + share.ShareName);
-                        }*/
+                        //share.PromptForCredentials = true;
+                        share.MapDrive(usernameTxtBox.Text, passwordTxtBox.Text);
+                        /* }
+                         catch
+                         {
+                             ProgramUtils.writeLog("Failed to map network drive: " + share.ShareName);
+                         }*/
                     }
                 }
             }
         }
-        #endregion
-        #region Processes
 
-        private List<NetworkDrive> enumerateSharesList(ListBox shareList)
+        /** Get list of shares from listbox item
+         */
+        private List<NetworkDrive> enumerateSharesfromListBox(ListBox shareList)
         {
             List<NetworkDrive> driveList = new List<NetworkDrive>();
-            List<NetworkDrive> userDrives = json.getCurrentUserDrivesFromJson();
             NetworkDrive matched = null;
 
             foreach (string shareName in shareList.Items)
@@ -58,7 +93,7 @@ namespace drive_map_utility
                 try
                 {
                     string fullpath = shareName.Split(' ')[1];
-                    matched = userDrives.Find(share => share.ShareName == fullpath);
+                    matched = ThisComputer.jsonUsersFile.Find(share => share.ShareName == fullpath);
                     driveList.Add(matched);
                 }
                 catch
@@ -98,11 +133,11 @@ namespace drive_map_utility
             this.Refresh();
         }
 
+        /* Get list of all network drives that are currently un-mapped */
         private List<NetworkDrive> getUnmappedDrives()
         {
             List<NetworkDrive> unmappedShares = new List<NetworkDrive>();
-            List<NetworkDrive> userJsonDrives = json.getCurrentUserDrivesFromJson();
-            foreach (NetworkDrive share in userJsonDrives)
+            foreach (NetworkDrive share in ThisComputer.jsonUsersFile)
             {
                 if (!ThisComputer.isMapped(share))
                 {
@@ -113,22 +148,21 @@ namespace drive_map_utility
             return unmappedShares;
         }
 
+        /* Fills out listbox elements in form with unmapped and mapped drives */
         private void populateListBoxes()
         {
-            List<NetworkDrive> currentUserDrives = json.getCurrentUserDrivesFromJson();
             List<string> mappedShares = new List<string>();
             List<string> unmappedShares = new List<string>();
-            List<NetworkDrive> currentlyMappedShares = ThisComputer.getCurrentlyMappedDrives();
 
             NetworkDrive matched = null;
-            if (currentUserDrives != null)
+            if (ThisComputer.jsonUsersFile != null)
             {
-                foreach (NetworkDrive share in currentUserDrives)
+                foreach (NetworkDrive share in ThisComputer.jsonUsersFile)
                 {
                     //check if share is mapped, otherwise put in other list
                     if (ThisComputer.isMapped(share))
                     {
-                        matched = currentlyMappedShares.Find(item => item.ShareName == share.ShareName);
+                        matched = ThisComputer.currentlyMappedShares.Find(item => item.ShareName == share.ShareName);
                         mappedShares.Add(matched.LocalDrive + " " + share.ShareName);
                     }
                     else
@@ -154,21 +188,5 @@ namespace drive_map_utility
             this.Refresh();
         }
         #endregion
-
-        private void addToMappedList_Click(object sender, EventArgs e)
-        {
-            MoveSelItem(knownList, mappedList);
-        }
-
-        private void removeFromMappedList_Click(object sender, EventArgs e)
-        {
-            MoveSelItem(mappedList, knownList);
-        }
-
-        private void addNewButton_Click(object sender, EventArgs e)
-        {
-            AddNewShare addNewForm = new AddNewShare();
-            addNewForm.Show();
-        }
     }
 }

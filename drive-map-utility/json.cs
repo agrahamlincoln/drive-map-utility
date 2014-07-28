@@ -13,6 +13,12 @@ namespace drive_map_utility
 {
     class json
     {
+        const string LIST_SHARES_FILENAME = "knownshares.json";
+        const string LIST_USERS_FILENAME = "users.json";
+
+        private static List<Fileshare> knownShares = enumKnownShares();
+        private static List<User> knownUsers = enumUsers();
+
         public class Fileshare
         {
             public int id { get; set; }
@@ -81,12 +87,6 @@ namespace drive_map_utility
                 return netDrives;
             }
         }
-
-        const string LIST_SHARES_FILENAME = "knownshares.json";
-        const string LIST_USERS_FILENAME = "users.json";
-
-        public List<Fileshare> knownShares = enumKnownShares();
-        public List<User> knownUsers = enumUsers();
 
         /* Create list of fileshares from knownshares file
          * Returns List of "Fileshare" objects that represent all known fileshares.

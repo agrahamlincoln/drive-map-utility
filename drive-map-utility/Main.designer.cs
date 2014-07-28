@@ -43,8 +43,14 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.usrnameLabel = new System.Windows.Forms.Label();
+            this.PasswdLabel = new System.Windows.Forms.Label();
+            this.passwordTxtBox = new System.Windows.Forms.TextBox();
+            this.usernameTxtBox = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.formOutline.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // knownList
@@ -65,7 +71,7 @@
             // 
             // statusBar
             // 
-            this.statusBar.Location = new System.Drawing.Point(0, 333);
+            this.statusBar.Location = new System.Drawing.Point(0, 398);
             this.statusBar.Name = "statusBar";
             this.statusBar.Size = new System.Drawing.Size(490, 22);
             this.statusBar.TabIndex = 2;
@@ -82,7 +88,7 @@
             this.formOutline.Controls.Add(this.mappedList);
             this.formOutline.Controls.Add(this.knownList);
             this.formOutline.ForeColor = System.Drawing.Color.Black;
-            this.formOutline.Location = new System.Drawing.Point(19, 74);
+            this.formOutline.Location = new System.Drawing.Point(21, 135);
             this.formOutline.Name = "formOutline";
             this.formOutline.Size = new System.Drawing.Size(448, 249);
             this.formOutline.TabIndex = 3;
@@ -118,7 +124,7 @@
             this.mapSharesButton.Location = new System.Drawing.Point(10, 217);
             this.mapSharesButton.Name = "mapSharesButton";
             this.mapSharesButton.Size = new System.Drawing.Size(191, 23);
-            this.mapSharesButton.TabIndex = 5;
+            this.mapSharesButton.TabIndex = 3;
             this.mapSharesButton.Text = "Map Shares";
             this.mapSharesButton.UseVisualStyleBackColor = true;
             this.mapSharesButton.Click += new System.EventHandler(this.mapSharesButton_Click);
@@ -162,12 +168,12 @@
             // Title
             // 
             this.Title.AutoSize = true;
-            this.Title.Font = new System.Drawing.Font("Cambria", 24F, System.Drawing.FontStyle.Bold);
-            this.Title.Location = new System.Drawing.Point(212, 34);
+            this.Title.Font = new System.Drawing.Font("Cambria", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Title.Location = new System.Drawing.Point(277, 68);
             this.Title.Name = "Title";
-            this.Title.Size = new System.Drawing.Size(255, 37);
+            this.Title.Size = new System.Drawing.Size(177, 32);
             this.Title.TabIndex = 4;
-            this.Title.Text = "Fileshare Utility";
+            this.Title.Text = "Map -a- Drive";
             // 
             // menuStrip1
             // 
@@ -200,11 +206,58 @@
             this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
             this.aboutToolStripMenuItem1.Text = "About";
             // 
+            // usrnameLabel
+            // 
+            this.usrnameLabel.AutoSize = true;
+            this.usrnameLabel.Location = new System.Drawing.Point(3, 16);
+            this.usrnameLabel.Name = "usrnameLabel";
+            this.usrnameLabel.Size = new System.Drawing.Size(55, 13);
+            this.usrnameLabel.TabIndex = 6;
+            this.usrnameLabel.Text = "Username";
+            // 
+            // PasswdLabel
+            // 
+            this.PasswdLabel.AutoSize = true;
+            this.PasswdLabel.Location = new System.Drawing.Point(3, 58);
+            this.PasswdLabel.Name = "PasswdLabel";
+            this.PasswdLabel.Size = new System.Drawing.Size(53, 13);
+            this.PasswdLabel.TabIndex = 7;
+            this.PasswdLabel.Text = "Password";
+            // 
+            // passwordTxtBox
+            // 
+            this.passwordTxtBox.Location = new System.Drawing.Point(6, 74);
+            this.passwordTxtBox.Name = "passwordTxtBox";
+            this.passwordTxtBox.PasswordChar = '*';
+            this.passwordTxtBox.Size = new System.Drawing.Size(214, 20);
+            this.passwordTxtBox.TabIndex = 2;
+            // 
+            // usernameTxtBox
+            // 
+            this.usernameTxtBox.Location = new System.Drawing.Point(6, 32);
+            this.usernameTxtBox.Name = "usernameTxtBox";
+            this.usernameTxtBox.Size = new System.Drawing.Size(214, 20);
+            this.usernameTxtBox.TabIndex = 1;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.passwordTxtBox);
+            this.groupBox1.Controls.Add(this.usrnameLabel);
+            this.groupBox1.Controls.Add(this.usernameTxtBox);
+            this.groupBox1.Controls.Add(this.PasswdLabel);
+            this.groupBox1.Location = new System.Drawing.Point(21, 29);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(226, 100);
+            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Login";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(490, 355);
+            this.ClientSize = new System.Drawing.Size(490, 420);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.formOutline);
             this.Controls.Add(this.statusBar);
@@ -216,6 +269,8 @@
             this.formOutline.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -238,6 +293,11 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
+        private System.Windows.Forms.Label usrnameLabel;
+        private System.Windows.Forms.Label PasswdLabel;
+        private System.Windows.Forms.TextBox passwordTxtBox;
+        private System.Windows.Forms.TextBox usernameTxtBox;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
 

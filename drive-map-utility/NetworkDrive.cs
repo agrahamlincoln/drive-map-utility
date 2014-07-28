@@ -188,7 +188,7 @@ namespace drive_map_utility
 			int i = WNetAddConnection2A(ref stNetRes, psPassword, psUsername, iFlags);			
 			if(i>0){
                 ProgramUtils.writeLog("Attempt to map: " + ls_ShareName + " on drive " + ls_Drive + " has failed.");
-                throw new System.ComponentModel.Win32Exception(i);
+                //throw new System.ComponentModel.Win32Exception(i);
             }						
 		}
 
