@@ -55,9 +55,16 @@ namespace drive_map_utility
 
             foreach (string shareName in shareList.Items)
             {
-                string fullpath = shareName.Split(' ')[1];
-                matched = userDrives.Find(share => share.ShareName == fullpath);
-                driveList.Add(matched);
+                try
+                {
+                    string fullpath = shareName.Split(' ')[1];
+                    matched = userDrives.Find(share => share.ShareName == fullpath);
+                    driveList.Add(matched);
+                }
+                catch
+                {
+                    ProgramUtils.writeLog("Error while attempting to map drive: \"" + shareName + "\"");
+                }
             }
 
             return driveList;
@@ -114,16 +121,25 @@ namespace drive_map_utility
             List<NetworkDrive> currentlyMappedShares = ThisComputer.getCurrentlyMappedDrives();
 
             NetworkDrive matched = null;
-            foreach (NetworkDrive share in currentUserDrives)
+            if (currentUserDrives != null)
             {
-                //check if share is mapped, otherwise put in other list
-                if (ThisComputer.isMapped(share))
+                foreach (NetworkDrive share in currentUserDrives)
                 {
-                    matched = currentlyMappedShares.Find(item => item.ShareName == share.ShareName);
-                    mappedShares.Add(matched.LocalDrive + " " + share.ShareName);
+                    //check if share is mapped, otherwise put in other list
+                    if (ThisComputer.isMapped(share))
+                    {
+                        matched = currentlyMappedShares.Find(item => item.ShareName == share.ShareName);
+                        mappedShares.Add(matched.LocalDrive + " " + share.ShareName);
+                    }
+                    else
+                        unmappedShares.Add(share.LocalDrive + " " + share.ShareName);
                 }
-                else
-                    unmappedShares.Add(share.LocalDrive + " " + share.ShareName);
+            }
+            else
+            {
+                ProgramUtils.writeLog("Error: No user drives found.");
+                mappedShares.Add("No drives found.");
+                unmappedShares.Add("No drives found.");
             }
 
             AddToListBox(mappedList, mappedShares);
