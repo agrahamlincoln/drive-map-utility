@@ -29,8 +29,8 @@ namespace drive_map_utility
                 foreach (ManagementObject queryObj in searcher.Get())
                 {
                     //get information using WMI
-                    driveLetter = queryObj["LocalName"].ToString();
-                    fullPath = queryObj["RemotePath"].ToString();
+                    driveLetter = String.Format("{0}", queryObj["LocalName"]);
+                    fullPath = String.Format("{0}", queryObj["RemotePath"]);
 
                     //create new object storing information from WMI
                     mappedDrives.Add(new NetworkDrive(driveLetter, fullPath));
