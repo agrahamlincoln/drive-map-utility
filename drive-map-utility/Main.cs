@@ -57,18 +57,17 @@ namespace drive_map_utility
             {
                 //shared in the mapped list that are not mapped
                 List<NetworkDrive> needToBeMapped = convertListToNetworkDrive(mappedList, false);
+                //map and unmap the drives
+                if (usernameTxtBox.Text != "" && passwordTxtBox.Text != "")
+                    mapList(needToBeMapped, usernameTxtBox.Text, passwordTxtBox.Text);
+                else
+                    mapList(needToBeMapped);
+            }
+
+            if (knownList.Items.Count > 0)
+            {
                 //shares in the unmapped list that are mapped
                 List<NetworkDrive> needToBeUnmapped = convertListToNetworkDrive(knownList, true);
-
-                if (usernameTxtBox.Text != "" && passwordTxtBox.Text != "")
-                {
-                    mapList(needToBeMapped, usernameTxtBox.Text, passwordTxtBox.Text);
-                }
-                else
-                {
-                    mapList(needToBeMapped);
-                }
-
                 unmapList(needToBeUnmapped);
             }
         }
