@@ -1,0 +1,16 @@
+[
+   {
+        "id": 1,
+        "name": "Fileshare #1",
+        "server": "file-server01",
+        "folder": "shared-folder",
+        "domain": "YOURDOMAIN"
+    },
+	{
+		"id": 2,
+		"name": "Fileshare #2",
+		"server": "file-server02",
+		"folder": "shared-folder",
+		"domain": "YOURDOMAIN"
+	}
+]
