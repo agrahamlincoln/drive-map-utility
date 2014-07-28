@@ -96,15 +96,22 @@ namespace drive_map_utility
             //List of fileshares to return
             List<Fileshare> knownShares = new List<Fileshare>();
 
-            //Get path of knownshares.json file
-            AppSettingsReader appConfig = new AppSettingsReader();
-            string knownsharesJson_path = (string)appConfig.GetValue("knownsharesJson_Path", typeof(string));
+            try
+            {
+                //Get path of knownshares.json file
+                AppSettingsReader appConfig = new AppSettingsReader();
+                string knownsharesJson_path = (string)appConfig.GetValue("knownsharesJson_Path", typeof(string));
 
-            //Read json from file on network
-            StreamReader userFile = new StreamReader(knownsharesJson_path + "\\" + LIST_SHARES_FILENAME);
-            string jsonFile = userFile.ReadToEnd();
+                //Read json from file on network
+                StreamReader userFile = new StreamReader(knownsharesJson_path + "\\" + LIST_SHARES_FILENAME);
+                string jsonFile = userFile.ReadToEnd();
 
-            knownShares = JsonConvert.DeserializeObject<List<Fileshare>>(jsonFile);
+                knownShares = JsonConvert.DeserializeObject<List<Fileshare>>(jsonFile);
+            }
+            catch
+            {
+                ProgramUtils.writeLog("Error: unable to read knownshares.json file");
+            }
 
             return knownShares;
         }
@@ -131,20 +138,27 @@ namespace drive_map_utility
 
             //Get path of users.json file
             AppSettingsReader appConfig = new AppSettingsReader();
-            string usersJson_path = (string)appConfig.GetValue("usersJson_Path", typeof(string));
+            try
+            {
+                string usersJson_path = (string)appConfig.GetValue("usersJson_Path", typeof(string));
 
-            //Read json from file on network
-            StreamReader userFile = new StreamReader(usersJson_path + "\\" + LIST_USERS_FILENAME);
-            string jsonFile = userFile.ReadToEnd();
+                //Read json from file on network
+                StreamReader userFile = new StreamReader(usersJson_path + "\\" + LIST_USERS_FILENAME);
+                string jsonFile = userFile.ReadToEnd();
 
-            users = JsonConvert.DeserializeObject<List<User>>(jsonFile);
+                users = JsonConvert.DeserializeObject<List<User>>(jsonFile);
+            }
+            catch
+            {
+                ProgramUtils.writeLog("Error: unable to read users.json file");
+            }
 
             return users;
         }
 
         public static List<NetworkDrive> getCurrentUserDrivesFromJson()
         {
-            List<NetworkDrive> currentUserDrives = null;
+            List<NetworkDrive> currentUserDrives = new List<NetworkDrive>();
 
             //Get the currently logged in users' object
             List<json.User> users = json.enumUsers();
