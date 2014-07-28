@@ -48,6 +48,8 @@
             this.passwordTxtBox = new System.Windows.Forms.TextBox();
             this.usernameTxtBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.mapAll_btn = new System.Windows.Forms.Button();
+            this.unmapAll_btn = new System.Windows.Forms.Button();
             this.formOutline.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -79,6 +81,8 @@
             // 
             // formOutline
             // 
+            this.formOutline.Controls.Add(this.unmapAll_btn);
+            this.formOutline.Controls.Add(this.mapAll_btn);
             this.formOutline.Controls.Add(this.addNewButton);
             this.formOutline.Controls.Add(this.label2);
             this.formOutline.Controls.Add(this.mapSharesButton);
@@ -252,6 +256,29 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Login";
             // 
+            // mapAll_btn
+            // 
+            this.mapAll_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.mapAll_btn.Location = new System.Drawing.Point(207, 68);
+            this.mapAll_btn.Name = "mapAll_btn";
+            this.mapAll_btn.Size = new System.Drawing.Size(41, 23);
+            this.mapAll_btn.TabIndex = 7;
+            this.mapAll_btn.Text = "<<";
+            this.mapAll_btn.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.mapAll_btn.UseVisualStyleBackColor = true;
+            this.mapAll_btn.Click += new System.EventHandler(this.mapAll_btn_Click);
+            // 
+            // unmapAll_btn
+            // 
+            this.unmapAll_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.unmapAll_btn.Location = new System.Drawing.Point(207, 155);
+            this.unmapAll_btn.Name = "unmapAll_btn";
+            this.unmapAll_btn.Size = new System.Drawing.Size(41, 23);
+            this.unmapAll_btn.TabIndex = 8;
+            this.unmapAll_btn.Text = ">>";
+            this.unmapAll_btn.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.unmapAll_btn.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,6 +325,8 @@
         private System.Windows.Forms.TextBox passwordTxtBox;
         private System.Windows.Forms.TextBox usernameTxtBox;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button unmapAll_btn;
+        private System.Windows.Forms.Button mapAll_btn;
     }
 }
 

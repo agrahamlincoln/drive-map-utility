@@ -218,5 +218,9 @@ namespace drive_map_utility
             this.Refresh();
         }
         #endregion
+
+        private void mapAll_btn_Click(object sender, EventArgs e)
+        {
+        }
     }
 }
