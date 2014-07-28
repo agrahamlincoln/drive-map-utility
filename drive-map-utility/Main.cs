@@ -55,29 +55,60 @@ namespace drive_map_utility
         {
             if (mappedList.Items.Count > 0)
             {
+                //shared in the mapped list that are not mapped
+                List<NetworkDrive> needToBeMapped = convertListToNetworkDrive(mappedList, false);
+                //shares in the unmapped list that are mapped
+                List<NetworkDrive> needToBeUnmapped = convertListToNetworkDrive(knownList, true);
+
                 if (usernameTxtBox.Text != "" && passwordTxtBox.Text != "")
                 {
-
+                    mapList(needToBeMapped, usernameTxtBox.Text, passwordTxtBox.Text);
                 }
-
-                updateStatus("Figuring out what needs to be mapped");
-                List<NetworkDrive> fullList = enumerateSharesfromListBox(mappedList);
-                foreach (NetworkDrive share in fullList)
+                else
                 {
-                    //if the share is not currently mapped
-                    if (!ThisComputer.isMapped(share))
-                    {
-                        /*try
-                        {*/
-                        //share.PromptForCredentials = true;
-                        share.MapDrive(usernameTxtBox.Text, passwordTxtBox.Text);
-                        /* }
-                         catch
-                         {
-                             ProgramUtils.writeLog("Failed to map network drive: " + share.ShareName);
-                         }*/
-                    }
+                    mapList(needToBeMapped);
                 }
+
+                unmapList(needToBeUnmapped);
+            }
+        }
+
+        private List<NetworkDrive> convertListToNetworkDrive(ListBox shareList, bool isMapped)
+        {
+            List<NetworkDrive> matchedDrives = new List<NetworkDrive>();
+
+            List<NetworkDrive> drivesFromListBox = enumerateSharesfromListBox(shareList);
+            foreach (NetworkDrive share in drivesFromListBox)
+            {
+                //if the share matches the bool value currently mapped
+                if (ThisComputer.isMapped(share) == isMapped)
+                {
+                    matchedDrives.Add(share);
+                }
+            }
+
+            return matchedDrives;
+        }
+
+        private void unmapList(List<NetworkDrive> listOfDrives)
+        {
+            foreach (NetworkDrive drive in listOfDrives)
+                drive.UnMapDrive();
+        }
+
+        private void mapList(List<NetworkDrive> listOfDrives)
+        {
+            foreach (NetworkDrive drive in listOfDrives)
+            {
+                drive.PromptForCredentials = true;
+                drive.MapDrive();
+            }
+        }
+        private void mapList(List<NetworkDrive> listOfDrives, string username, string password)
+        {
+            foreach (NetworkDrive drive in listOfDrives)
+            {
+                drive.MapDrive(username, password);
             }
         }
 
