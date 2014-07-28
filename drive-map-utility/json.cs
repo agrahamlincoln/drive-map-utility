@@ -156,27 +156,27 @@ namespace drive_map_utility
             return users;
         }
 
-        public static List<NetworkDrive> getCurrentUserDrivesFromJson()
+        public static List<NetworkDrive> getUserDrivesFromJson()
         {
-            List<NetworkDrive> currentUserDrives = null;
+            List<NetworkDrive> userDrives = null;
 
             //Get the currently logged in users' object
-            List<json.User> users = json.enumUsers();
-            foreach (json.User userObj in users)
+            List<User> users = json.enumUsers();
+            foreach (User userObj in users)
             {
                 if (userObj.username.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase))
                 {
-                    currentUserDrives = userObj.convertToList();
+                    userDrives = userObj.convertToList();
                     break; //no need to continue the loop once a match is found
                 }
             }
 
-            if (currentUserDrives == null)
+            if (userDrives == null)
             {
                 ProgramUtils.writeLog("Could not find a user or any network drives");
             }
 
-            return currentUserDrives;
+            return userDrives;
         }
     }
 }

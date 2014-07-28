@@ -47,6 +47,16 @@ namespace drive_map_utility
             updateDrives();
         }
 
+        private void mapAll_btn_Click(object sender, EventArgs e)
+        {
+            MoveAllItems(knownList, mappedList);
+        }
+
+        private void unmapAll_btn_Click(object sender, EventArgs e)
+        {
+            MoveAllItems(mappedList, knownList);
+        }
+
         #endregion
 
         #region Processes
@@ -149,6 +159,21 @@ namespace drive_map_utility
             catch { }
         }
 
+        private void MoveAllItems(ListBox from, ListBox to)
+        {
+            try
+            {
+                foreach (object listBoxItem in from.Items)
+                {
+                    to.Items.Add(listBoxItem);
+                    from.Items.Remove(listBoxItem);
+                }
+            }
+            catch
+            {
+            }
+        }
+
         private void AddToListBox(ListBox box, List<string> items)
         {
             foreach (string item in items)
@@ -219,8 +244,6 @@ namespace drive_map_utility
         }
         #endregion
 
-        private void mapAll_btn_Click(object sender, EventArgs e)
-        {
-        }
+
     }
 }
