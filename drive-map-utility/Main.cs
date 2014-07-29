@@ -18,7 +18,6 @@ namespace drive_map_utility
             setOutlineText();
             populateListBoxes();
         }
-
         #region Form Controls
 
         private void mapSharesButton_Click(object sender, EventArgs e)
@@ -254,7 +253,5 @@ namespace drive_map_utility
             this.Refresh();
         }
         #endregion
-
-
     }
 }

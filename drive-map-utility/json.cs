@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace drive_map_utility
 {
@@ -99,15 +100,8 @@ namespace drive_map_utility
 
             try
             {
-                //Get path of knownshares.json file
-                AppSettingsReader appConfig = new AppSettingsReader();
-                string knownsharesJson_path = (string)appConfig.GetValue("knownsharesJson_Path", typeof(string));
-
-                //Read json from file on network
-                StreamReader userFile = new StreamReader(knownsharesJson_path + "\\" + LIST_SHARES_FILENAME);
-                string jsonFile = userFile.ReadToEnd();
-
-                knownShares = JsonConvert.DeserializeObject<List<Fileshare>>(jsonFile);
+                string jsonString = getJsonStringFromKnownFileshares();
+                knownShares = JsonConvert.DeserializeObject<List<Fileshare>>(jsonString);
             }
             catch
             {
@@ -124,18 +118,10 @@ namespace drive_map_utility
         private static List<User> enumUsers()
         {
             List<User> users = new List<User>();
-
-            //Get path of users.json file
-            AppSettingsReader appConfig = new AppSettingsReader();
             try
             {
-                string usersJson_path = (string)appConfig.GetValue("usersJson_Path", typeof(string));
-
-                //Read json from file on network
-                StreamReader userFile = new StreamReader(usersJson_path + "\\" + LIST_USERS_FILENAME);
-                string jsonFile = userFile.ReadToEnd();
-
-                users = JsonConvert.DeserializeObject<List<User>>(jsonFile);
+                string jsonString = getJsonStringFromUsers();
+                users = JsonConvert.DeserializeObject<List<User>>(jsonString);
             }
             catch
             {
@@ -143,6 +129,25 @@ namespace drive_map_utility
             }
 
             return users;
+        }
+
+        private static string getJsonStringFromUsers()
+        {
+            string fullPath = Program.readFromAppConfig("usersJson_Path") + "\\" + LIST_USERS_FILENAME;
+            return getJsonString(fullPath);
+        }
+
+        private static string getJsonStringFromKnownFileshares()
+        {
+            string fullPath = Program.readFromAppConfig("knownsharesJson_Path") + "\\" + LIST_SHARES_FILENAME;
+            return getJsonString(fullPath);
+        }
+
+        private static string getJsonString(string fullPath)
+        {
+            //Read json from file on network
+            StreamReader file = new StreamReader(fullPath);
+            return file.ReadToEnd();
         }
 
 
@@ -197,9 +202,10 @@ namespace drive_map_utility
                 netDrive.LocalDrive = matched.LocalDrive;
             }
 
-
+            JToken usersFile = JObject.Parse(getJsonStringFromUsers());
         }
 
         #endregion
+
     }
 }

@@ -129,8 +129,6 @@ namespace drive_map_utility
 
         private static char parseLetter(string driveLetter)
         {
-            char driveLetterChar;
-
             Regex singleLetter = new Regex("^([A-z])");
 
             //validate driveLetter string parameter
