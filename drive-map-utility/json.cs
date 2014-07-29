@@ -22,6 +22,7 @@ namespace drive_map_utility
 
         public class Fileshare
         {
+            [JsonProperty("id")]
             public int id { get; set; }
             public string name { get; set; }
             public string server { get; set; }
@@ -46,6 +47,7 @@ namespace drive_map_utility
 
         public class User
         {
+            [JsonProperty("username")]
             //Class Variables
             public string username { get; set; }
             public List<string> fileshares { get; set; }
@@ -202,7 +204,9 @@ namespace drive_map_utility
                 netDrive.LocalDrive = matched.LocalDrive;
             }
 
-            JToken usersFile = JObject.Parse(getJsonStringFromUsers());
+            JArray usersFile = JArray.Parse(getJsonStringFromUsers());
+
+            //TO BE FINISHED
         }
 
         #endregion
