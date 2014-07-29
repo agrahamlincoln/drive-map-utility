@@ -110,7 +110,15 @@ namespace drive_map_utility
             foreach (NetworkDrive drive in listOfDrives)
             {
                 drive.PromptForCredentials = true;
-                drive.MapDrive();
+                if (ThisComputer.isDriveLetterAvailable(drive.LocalDrive))
+                {
+                    drive.MapDrive();
+                }
+                else
+                {
+                    drive.LocalDrive = ThisComputer.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
+                    drive.MapDrive();
+                }
             }
         }
         private void mapList(List<NetworkDrive> listOfDrives, string username, string password)

@@ -45,17 +45,11 @@ namespace drive_map_utility
             return mappedDrives;
         }
 
-        public static string getNextAvailableDriveLetter()
-        {
-            // Allocate space for alphabet
-            List<char> driveLetters = new List<char>(26); 
+        #region Drive Letter Checking
 
-            // increment from ASCII values for A-Z
-            for (int i = 65; i < 91; i++) 
-            {
-                // Add uppercase letters to possible drive letters
-                driveLetters.Add(Convert.ToChar(i)); 
-            }
+        private static List<char> getAvailableDriveLetters()
+        {
+            List<char> driveLetters = getAlphabetUppercase();
 
             foreach (string drive in Directory.GetLogicalDrives())
             {
@@ -63,13 +57,80 @@ namespace drive_map_utility
                 driveLetters.Remove(drive[0]); 
             }
 
-            //return the first available drive letter
-            return driveLetters[0].ToString(); 
+            return driveLetters;
+        }
+
+        private static List<char> getAlphabetUppercase()
+        {
+            // Allocate space for alphabet
+            List<char> alphabet = new List<char>(26);
+
+            // increment from ASCII values for A-Z
+            for (int i = 65; i < 91; i++)
+            {
+                // Add uppercase letters to possible drive letters
+                alphabet.Add(Convert.ToChar(i));
+            }
+            return alphabet;
+        }
+
+        /** Returns charAt(1) if  there are no available drive letters.
+        */
+        public static char getNextAvailableDriveLetter(string driveLetter)
+        {
+            char driveLetterChar = parseLetter(driveLetter);
+            return ogetNextAvailableDriveLetter(driveLetterChar);
+        }
+
+        /** Returns charAt(1) if  there are no available drive letters.
+        */
+        public static char getNextAvailableDriveLetter(char driveLetter)
+        {
+            return ogetNextAvailableDriveLetter(driveLetter);
+        }
+
+        private static char ogetNextAvailableDriveLetter(char driveLetter)
+        {
+            char availableLetter = Convert.ToChar(1);
+            for (int i = driveLetter + 1; i < 91; i++)
+            {
+                //starting at the driveletter char value
+                if (isDriveLetterAvailable(Convert.ToChar(i)))
+                {
+                    availableLetter = Convert.ToChar(i);
+                    break;
+                }
+            }
+            return availableLetter;
         }
 
         public static bool isDriveLetterAvailable(string driveLetter)
         {
+            char driveLetterChar = parseLetter(driveLetter);
+            return oisDriveLetterAvailable(driveLetterChar);
+        }
+
+        public static bool isDriveLetterAvailable(char driveLetter)
+        {
+            return oisDriveLetterAvailable(driveLetter);
+        }
+
+        private static bool oisDriveLetterAvailable(char driveLetter)
+        {
             bool isAvailable = true;
+            foreach (string drive in Directory.GetLogicalDrives())
+            {
+                if (driveLetter.Equals(drive[0]))
+                    isAvailable = false;
+            }
+
+            return isAvailable;
+        }
+
+        private static char parseLetter(string driveLetter)
+        {
+            char driveLetterChar;
+
             Regex singleLetter = new Regex("^([A-z])");
 
             //validate driveLetter string parameter
@@ -83,14 +144,9 @@ namespace drive_map_utility
                 throw new ArgumentException("Error: Invalid driveletter passed to method");
             }
 
-            foreach (string drive in Directory.GetLogicalDrives())
-            {
-                if (driveLetter.Equals(drive[0]))
-                    isAvailable = false;
-            }
-
-            return isAvailable;
+            return Convert.ToChar(driveLetter);
         }
+        #endregion
 
         public static bool isMapped(NetworkDrive drive)
         {
