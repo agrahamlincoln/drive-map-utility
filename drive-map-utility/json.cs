@@ -88,6 +88,7 @@ namespace drive_map_utility
             }
         }
 
+        #region Read from JSON file
         /* Create list of fileshares from knownshares file
          * Returns List of "Fileshare" objects that represent all known fileshares.
          */
@@ -113,18 +114,6 @@ namespace drive_map_utility
                 ProgramUtils.writeLog("Error: unable to read knownshares.json file");
             }
 
-            return knownShares;
-        }
-
-        public static List<NetworkDrive> getKnownSharesFromJson()
-        {
-            List<NetworkDrive> knownShares = new List<NetworkDrive>();
-            List<Fileshare> enumerated = enumKnownShares();
-
-            foreach (Fileshare share in enumerated)
-            {
-                knownShares.Add(new NetworkDrive("\\\\" + share.server + "\\" + share.folder));
-            }
             return knownShares;
         }
 
@@ -156,6 +145,11 @@ namespace drive_map_utility
             return users;
         }
 
+
+
+        #endregion
+
+        #region Data Processing
         public static List<NetworkDrive> getUserDrivesFromJson()
         {
             List<NetworkDrive> userDrives = null;
@@ -178,5 +172,34 @@ namespace drive_map_utility
 
             return userDrives;
         }
+        public static List<NetworkDrive> getKnownSharesFromJson()
+        {
+            List<NetworkDrive> knownShares = new List<NetworkDrive>();
+            List<Fileshare> enumerated = enumKnownShares();
+
+            foreach (Fileshare share in enumerated)
+            {
+                knownShares.Add(new NetworkDrive("\\\\" + share.server + "\\" + share.folder));
+            }
+            return knownShares;
+        }
+        #endregion
+
+        #region modify methods
+
+        public void addFileshare(NetworkDrive netDrive)
+        {
+            if (netDrive.LocalDrive == "" || netDrive.LocalDrive == null)
+            {
+                //no drive letter found on this network drive object
+                //Set Drive letter to the one found in knownshares.json
+                NetworkDrive matched = ThisComputer.jsonKnownShares.Find(share => share.ShareName == netDrive.ShareName);
+                netDrive.LocalDrive = matched.LocalDrive;
+            }
+
+
+        }
+
+        #endregion
     }
 }
