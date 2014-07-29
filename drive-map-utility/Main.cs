@@ -122,18 +122,27 @@ namespace drive_map_utility
         }
 
         /** Get list of shares from listbox item
+         * Will retain the drive letter from the listbox if it is different than from json.
          */
         private List<NetworkDrive> enumerateSharesfromListBox(ListBox shareList)
         {
             List<NetworkDrive> driveList = new List<NetworkDrive>();
             NetworkDrive matched = null;
 
+            string fullpath;
+            string driveLetter;
+
             foreach (string shareName in shareList.Items)
             {
                 try
                 {
-                    string fullpath = shareName.Split(' ')[1];
+                    fullpath = shareName.Split(' ')[1];
+                    driveLetter = shareName.Split(' ')[0];
                     matched = ThisComputer.jsonUsersFile.Find(share => share.ShareName == fullpath);
+                    if (!driveLetter.Equals(matched.LocalDrive))
+                    {
+                        matched.LocalDrive = driveLetter;
+                    }
                     driveList.Add(matched);
                 }
                 catch
@@ -161,17 +170,11 @@ namespace drive_map_utility
 
         private void MoveAllItems(ListBox from, ListBox to)
         {
-            try
+            for (int i = 0; i < from.Items.Count; i++)
             {
-                foreach (object listBoxItem in from.Items)
-                {
-                    to.Items.Add(listBoxItem);
-                    from.Items.Remove(listBoxItem);
-                }
+                to.Items.Add(from.Items[i].ToString());
             }
-            catch
-            {
-            }
+            from.Items.Clear(); 
         }
 
         private void AddToListBox(ListBox box, List<string> items)
