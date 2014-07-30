@@ -18,6 +18,16 @@ namespace drive_map_utility
         const string TIMESTAMP_FORMAT = "MM/dd HH:mm:ss ffff";
         const string LOGFILE_NAME = "DriveMaps_log.txt";
 
+        public static bool matchString(string str1, string str2)
+        {
+            bool isMatch = false;
+            if (str1.Equals(str2, StringComparison.OrdinalIgnoreCase))
+            {
+                isMatch = true;
+            }
+            return isMatch;
+        }
+
         public static void writeLog(string error)
         {
             string logLocation = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + LOGFILE_NAME;

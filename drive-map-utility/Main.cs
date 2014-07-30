@@ -12,6 +12,8 @@ namespace drive_map_utility
 {
     public partial class Main : Form
     {
+        private FormMediator _formMediator;
+
         public Main()
         {
             InitializeComponent();
@@ -19,6 +21,11 @@ namespace drive_map_utility
             populateListBoxes();
         }
 
+        public override void Refresh()
+        {
+            populateListBoxes();
+            base.Refresh();
+        }
         #region Form Controls
 
         private void mapSharesButton_Click(object sender, EventArgs e)
@@ -38,8 +45,10 @@ namespace drive_map_utility
 
         private void addNewButton_Click(object sender, EventArgs e)
         {
+            // Creates a form where you can manually enter the new fileshare
             AddNewShare addNewForm = new AddNewShare();
-            addNewForm.Show();
+            _formMediator = new FormMediator(this, addNewForm);
+            addNewForm.Show(this);
         }
 
         private void Main_closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -109,36 +118,65 @@ namespace drive_map_utility
         {
             foreach (NetworkDrive drive in listOfDrives)
             {
+                // Ask for credentials to have access to the drive
                 drive.PromptForCredentials = true;
-                drive.MapDrive();
+                if (ThisComputer.isDriveLetterAvailable(drive.LocalDrive))
+                {
+                    drive.MapDrive();
+                }
+                else
+                {
+                    drive.LocalDrive = ThisComputer.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
+                    drive.MapDrive();
+                }
             }
         }
         private void mapList(List<NetworkDrive> listOfDrives, string username, string password)
         {
             foreach (NetworkDrive drive in listOfDrives)
             {
+                // Takes in the username and password
                 drive.MapDrive(username, password);
             }
         }
 
         /** Get list of shares from listbox item
+         * Will retain the drive letter from the listbox if it is different than from json.
          */
         private List<NetworkDrive> enumerateSharesfromListBox(ListBox shareList)
         {
             List<NetworkDrive> driveList = new List<NetworkDrive>();
             NetworkDrive matched = null;
 
+            string server;
+            string folder;
+            string driveLetter;
+            string fullPath;
+
             foreach (string shareName in shareList.Items)
             {
                 try
                 {
-                    string fullpath = shareName.Split(' ')[1];
-                    matched = ThisComputer.jsonUsersFile.Find(share => share.ShareName == fullpath);
+                    // Separates the drive letter from the full path name
+                    server = shareName.Split('\\')[2];
+                    folder = shareName.Split('\\')[3];
+                    fullPath = "\\\\" + server + "\\" + folder;
+                    driveLetter = shareName.Split(' ')[0];
+                    matched = ThisComputer.matchPathToKnownDrive(fullPath);
+                    if (matched == null)
+                    {
+                        //this drive is not known
+                        ProgramUtils.writeLog("Error: Drive is not Known");
+                    }
+                    if (!driveLetter.Equals(matched.LocalDrive))
+                    {
+                        matched.LocalDrive = driveLetter;   // Changes the drive letter to what is in the shareList
+                    }
                     driveList.Add(matched);
                 }
                 catch
                 {
-                    ProgramUtils.writeLog("Error while attempting to map drive: \"" + shareName + "\"");
+                    ProgramUtils.writeLog("Error while attempting to match drives from ListBox: \"" + shareName + "\"");
                 }
             }
 
@@ -153,6 +191,7 @@ namespace drive_map_utility
         {
             try
             {
+                // Removes item from one listbox and places into another
                 to.Items.Add(from.SelectedItem);
                 from.Items.Remove(from.SelectedItem);
             }
@@ -161,17 +200,12 @@ namespace drive_map_utility
 
         private void MoveAllItems(ListBox from, ListBox to)
         {
-            try
+            for (int i = 0; i < from.Items.Count; i++)
             {
-                foreach (object listBoxItem in from.Items)
-                {
-                    to.Items.Add(listBoxItem);
-                    from.Items.Remove(listBoxItem);
-                }
+                // Moves all items from one listbox to the other
+                to.Items.Add(from.Items[i].ToString());
             }
-            catch
-            {
-            }
+            from.Items.Clear(); 
         }
 
         private void AddToListBox(ListBox box, List<string> items)
@@ -184,6 +218,7 @@ namespace drive_map_utility
 
         private void setOutlineText()
         {
+            // Sets the current username to the form
             this.formOutline.Text = Environment.UserName;
             this.Refresh();
         }
@@ -192,7 +227,7 @@ namespace drive_map_utility
         private List<NetworkDrive> getUnmappedDrives()
         {
             List<NetworkDrive> unmappedShares = new List<NetworkDrive>();
-            foreach (NetworkDrive share in ThisComputer.jsonUsersFile)
+            foreach (NetworkDrive share in ThisComputer.jsonCurrentUserDrives)
             {
                 if (!ThisComputer.isMapped(share))
                 {
@@ -209,10 +244,11 @@ namespace drive_map_utility
             List<string> mappedShares = new List<string>();
             List<string> unmappedShares = new List<string>();
 
+            //Add Drives from JSON
             NetworkDrive matched = null;
-            if (ThisComputer.jsonUsersFile != null)
+            if (ThisComputer.jsonCurrentUserDrives != null)
             {
-                foreach (NetworkDrive share in ThisComputer.jsonUsersFile)
+                foreach (NetworkDrive share in ThisComputer.jsonCurrentUserDrives)
                 {
                     //check if share is mapped, otherwise put in other list
                     if (ThisComputer.isMapped(share))
@@ -227,13 +263,20 @@ namespace drive_map_utility
             else
             {
                 ProgramUtils.writeLog("Error: No user drives found.");
-                mappedShares.Add("No drives found.");
-                unmappedShares.Add("No drives found.");
+                mappedShares.Add("No drives found from json.");
+                unmappedShares.Add("No drives found from json.");
             }
 
+            //Add Drives from computer
+            foreach (NetworkDrive mapped in ThisComputer.currentlyMappedShares)
+            {
+                mappedShares.Add(mapped.LocalDrive + " " + mapped.ShareName);
+            }
+
+            mappedList.Items.Clear();
+            knownList.Items.Clear();
             AddToListBox(mappedList, mappedShares);
             AddToListBox(knownList, unmappedShares);
-            this.Refresh();
         }
 
         private void updateStatus(string status)
@@ -243,7 +286,5 @@ namespace drive_map_utility
             this.Refresh();
         }
         #endregion
-
-
     }
 }
