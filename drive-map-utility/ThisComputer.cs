@@ -45,6 +45,7 @@ namespace drive_map_utility
 
         public static bool isMapped(NetworkDrive drive)
         {
+            // Checks to see if the current drive is mapped already
             bool isMapped = false;
             List<NetworkDrive> currentDrives = getCurrentlyMappedDrives();
 
