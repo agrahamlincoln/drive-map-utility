@@ -8,26 +8,31 @@ using System.Text;
 using System.Threading;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace drive_map_utility
 {
-    class json
+    public class json
     {
         const string LIST_SHARES_FILENAME = "knownshares.json";
         const string LIST_USERS_FILENAME = "users.json";
+
+        static string USERS_JSON_FULL_FILEPATH = Program.readFromAppConfig("usersJson_Path") + "\\" + LIST_USERS_FILENAME;
+        static string SHARES_JSON_FULL_FILEPATH = Program.readFromAppConfig("knownsharesJson_Path") + "\\" + LIST_SHARES_FILENAME;
 
         private static List<Fileshare> knownShares = enumKnownShares();
         private static List<User> knownUsers = enumUsers();
 
         public class Fileshare
         {
+            [JsonProperty("id")]
             public int id { get; set; }
             public string name { get; set; }
             public string server { get; set; }
             public string folder { get; set; }
             public string domain { get; set; }
 
-            public NetworkDrive convert()
+            public NetworkDrive convertToNetworkDrive()
             {
                 NetworkDrive netDrive = new NetworkDrive();
                 netDrive.ShareName = "\\\\" + server + "\\" + folder;
@@ -35,22 +40,29 @@ namespace drive_map_utility
                 return netDrive;
             }
 
-            public NetworkDrive convert(string driveLetter)
+            public NetworkDrive convertToNetworkDrive(string driveLetter)
             {
-                NetworkDrive netDrive = this.convert();
+                NetworkDrive netDrive = this.convertToNetworkDrive();
                 netDrive.LocalDrive = driveLetter;
                 return netDrive;
             }
+
         }
 
         public class User
         {
+            [JsonProperty("username")]
             //Class Variables
             public string username { get; set; }
             public List<string> fileshares { get; set; }
             public List<NetworkDrive> fileshares_Obj { get; set; }
 
-            public List<NetworkDrive> convertToList()
+            public User(string uname)
+            {
+                this.username = uname;
+            }
+
+            public List<NetworkDrive> convertToNetworkDrive()
             {
                 //Regex to parse the strings from file
                 Regex numMatch = new Regex("[0-9]+"); //matches all numbers
@@ -80,7 +92,7 @@ namespace drive_map_utility
 
                             //match up the two id's
                             if (idFromUser.Equals(idFromFile))
-                                netDrives.Add(share.convert(driveLetter));
+                                netDrives.Add(share.convertToNetworkDrive(driveLetter));
                         }
                     }
                 }
@@ -88,6 +100,7 @@ namespace drive_map_utility
             }
         }
 
+        #region Read from JSON file
         /* Create list of fileshares from knownshares file
          * Returns List of "Fileshare" objects that represent all known fileshares.
          */
@@ -98,15 +111,8 @@ namespace drive_map_utility
 
             try
             {
-                //Get path of knownshares.json file
-                AppSettingsReader appConfig = new AppSettingsReader();
-                string knownsharesJson_path = (string)appConfig.GetValue("knownsharesJson_Path", typeof(string));
-
-                //Read json from file on network
-                StreamReader userFile = new StreamReader(knownsharesJson_path + "\\" + LIST_SHARES_FILENAME);
-                string jsonFile = userFile.ReadToEnd();
-
-                knownShares = JsonConvert.DeserializeObject<List<Fileshare>>(jsonFile);
+                string jsonString = getJsonStringFromKnownFileshares();
+                knownShares = JsonConvert.DeserializeObject<List<Fileshare>>(jsonString);
             }
             catch
             {
@@ -114,6 +120,104 @@ namespace drive_map_utility
             }
 
             return knownShares;
+        }
+
+        /* Enumerates list of all users from file
+         * Stores all the users as a "User" object
+         * Returns: List<User> users from file.
+         */
+        private static List<User> enumUsers()
+        {
+            List<User> users = new List<User>();
+            try
+            {
+                string jsonString = getJsonStringFromUsers();
+                users = JsonConvert.DeserializeObject<List<User>>(jsonString);
+            }
+            catch
+            {
+                ProgramUtils.writeLog("Error: unable to read users.json file");
+            }
+
+            return users;
+        }
+
+        private static string getJsonStringFromUsers()
+        {
+            string fullPath = USERS_JSON_FULL_FILEPATH;
+            return getJsonString(fullPath);
+        }
+
+        private static string getJsonStringFromKnownFileshares()
+        {
+            string fullPath = SHARES_JSON_FULL_FILEPATH;
+            return getJsonString(fullPath);
+        }
+
+        private static string getJsonString(string fullPath)
+        {
+            //Read json from file on network
+            StreamReader file = new StreamReader(fullPath);
+            return file.ReadToEnd();
+        }
+
+        public static int getNewID()
+        {
+            int newID;
+            List<Fileshare> knownShares = enumKnownShares();
+            int lastID = knownShares[knownShares.Count - 1].id;
+            newID = lastID + 1;
+            return newID;
+        }
+
+        #endregion
+
+        #region Data Processing
+
+        public static Fileshare matchNetDrivetoKnownFileshare(NetworkDrive netDrive)
+        {
+            List<Fileshare> knownShares = enumKnownShares();
+
+            Fileshare returnShare = knownShares.Find(share => share.convertToNetworkDrive() == netDrive);
+
+            if (returnShare == null)
+            {
+                ProgramUtils.writeLog("Could not match NetDrive to share, returning null");
+
+            }
+
+            return returnShare;
+        }
+
+        public static List<NetworkDrive> getUserDrivesFromJson()
+        {
+            List<NetworkDrive> userDrives = null;
+            List<User> usersFromJson = enumUsers();
+
+            //Get the currently logged in users' object
+            int userIndex = findIndexOfCurrentlyLoggedInUserObj();
+
+            userDrives = usersFromJson[userIndex].convertToNetworkDrive();
+
+            if (userDrives == null)
+            {
+                ProgramUtils.writeLog("Could not find a user or any network drives");
+            }
+
+            return userDrives;
+        }
+
+        /**
+         * Returns -1 if it cannot find the index
+        */
+        private static int findIndexOfCurrentlyLoggedInUserObj()
+        {
+            int userIndex;
+
+            List<User> users = json.enumUsers();
+            userIndex = users.FindIndex(user => user.username.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase));
+
+            return userIndex;
         }
 
         public static List<NetworkDrive> getKnownSharesFromJson()
@@ -127,56 +231,51 @@ namespace drive_map_utility
             }
             return knownShares;
         }
+        #endregion
 
-        /* Enumerates list of all users from file
-         * Stores all the users as a "User" object
-         * Returns: List<User> users from file.
-         */
-        private static List<User> enumUsers()
+        #region modify methods
+
+        public void addFileshare(NetworkDrive netDrive)
         {
-            List<User> users = new List<User>();
-
-            //Get path of users.json file
-            AppSettingsReader appConfig = new AppSettingsReader();
-            try
+            if (netDrive.LocalDrive == "" || netDrive.LocalDrive == null)
             {
-                string usersJson_path = (string)appConfig.GetValue("usersJson_Path", typeof(string));
-
-                //Read json from file on network
-                StreamReader userFile = new StreamReader(usersJson_path + "\\" + LIST_USERS_FILENAME);
-                string jsonFile = userFile.ReadToEnd();
-
-                users = JsonConvert.DeserializeObject<List<User>>(jsonFile);
-            }
-            catch
-            {
-                ProgramUtils.writeLog("Error: unable to read users.json file");
+                //no drive letter found on this network drive object
+                //Set Drive letter to the one found in knownshares.json
+                NetworkDrive matched = ThisComputer.jsonKnownShares.Find(share => share.ShareName == netDrive.ShareName);
+                netDrive.LocalDrive = matched.LocalDrive;
             }
 
-            return users;
+            ThisComputer.jsonCurrentUserDrives.Add(netDrive);
         }
 
-        public static List<NetworkDrive> getUserDrivesFromJson()
+        public void updateUsersJson()
         {
-            List<NetworkDrive> userDrives = null;
+            //serialize json file from users
+            List<User> allUsersFromFile = enumUsers();
 
-            //Get the currently logged in users' object
-            List<User> users = json.enumUsers();
-            foreach (User userObj in users)
+            //find the current user object
+            int userIndex = findIndexOfCurrentlyLoggedInUserObj();
+            if (userIndex == -1)
             {
-                if (userObj.username.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase))
-                {
-                    userDrives = userObj.convertToList();
-                    break; //no need to continue the loop once a match is found
-                }
+                //no user exists; create one
+                allUsersFromFile.Add(new User(Environment.UserName));
             }
 
-            if (userDrives == null)
+            //edit the User Object
+            List<NetworkDrive> currentUserShares = ThisComputer.jsonCurrentUserDrives;
+            foreach (NetworkDrive drive in currentUserShares)
             {
-                ProgramUtils.writeLog("Could not find a user or any network drives");
+                string shareID = drive.convertToIdentifier();
+                allUsersFromFile[userIndex].fileshares.Add(shareID);
             }
 
-            return userDrives;
+            //write json back to file (overwrite)
+            string jsonString = JsonConvert.SerializeObject(allUsersFromFile);
+            StreamWriter sWriter = new StreamWriter(USERS_JSON_FULL_FILEPATH);
+            sWriter.Write(jsonString, true);
         }
+
+        #endregion
+
     }
 }

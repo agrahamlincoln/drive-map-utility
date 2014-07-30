@@ -12,6 +12,8 @@ namespace drive_map_utility
 {
     public partial class Main : Form
     {
+        private FormMediator _formMediator;
+
         public Main()
         {
             InitializeComponent();
@@ -19,6 +21,11 @@ namespace drive_map_utility
             populateListBoxes();
         }
 
+        public override void Refresh()
+        {
+            populateListBoxes();
+            base.Refresh();
+        }
         #region Form Controls
 
         private void mapSharesButton_Click(object sender, EventArgs e)
@@ -40,7 +47,8 @@ namespace drive_map_utility
         {
             // Creates a form where you can manually enter the new fileshare
             AddNewShare addNewForm = new AddNewShare();
-            addNewForm.Show();
+            _formMediator = new FormMediator(this, addNewForm);
+            addNewForm.Show(this);
         }
 
         private void Main_closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -112,7 +120,15 @@ namespace drive_map_utility
             {
                 // Ask for credentials to have access to the drive
                 drive.PromptForCredentials = true;
-                drive.MapDrive();
+                if (ThisComputer.isDriveLetterAvailable(drive.LocalDrive))
+                {
+                    drive.MapDrive();
+                }
+                else
+                {
+                    drive.LocalDrive = ThisComputer.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
+                    drive.MapDrive();
+                }
             }
         }
         private void mapList(List<NetworkDrive> listOfDrives, string username, string password)
@@ -142,7 +158,7 @@ namespace drive_map_utility
                     // Separates the drive letter from the full path name
                     fullpath = shareName.Split(' ')[1];
                     driveLetter = shareName.Split(' ')[0];
-                    matched = ThisComputer.jsonUsersFile.Find(share => share.ShareName == fullpath);
+                    matched = ThisComputer.matchPathToUserDrive(fullpath);
                     if (!driveLetter.Equals(matched.LocalDrive))
                     {
                         matched.LocalDrive = driveLetter;   // Changes the drive letter to what is in the shareList
@@ -202,7 +218,7 @@ namespace drive_map_utility
         private List<NetworkDrive> getUnmappedDrives()
         {
             List<NetworkDrive> unmappedShares = new List<NetworkDrive>();
-            foreach (NetworkDrive share in ThisComputer.jsonUsersFile)
+            foreach (NetworkDrive share in ThisComputer.jsonCurrentUserDrives)
             {
                 if (!ThisComputer.isMapped(share))
                 {
@@ -219,10 +235,11 @@ namespace drive_map_utility
             List<string> mappedShares = new List<string>();
             List<string> unmappedShares = new List<string>();
 
+            //Add Drives from JSON
             NetworkDrive matched = null;
-            if (ThisComputer.jsonUsersFile != null)
+            if (ThisComputer.jsonCurrentUserDrives != null)
             {
-                foreach (NetworkDrive share in ThisComputer.jsonUsersFile)
+                foreach (NetworkDrive share in ThisComputer.jsonCurrentUserDrives)
                 {
                     //check if share is mapped, otherwise put in other list
                     if (ThisComputer.isMapped(share))
@@ -237,13 +254,20 @@ namespace drive_map_utility
             else
             {
                 ProgramUtils.writeLog("Error: No user drives found.");
-                mappedShares.Add("No drives found.");
-                unmappedShares.Add("No drives found.");
+                mappedShares.Add("No drives found from json.");
+                unmappedShares.Add("No drives found from json.");
             }
 
+            //Add Drives from computer
+            foreach (NetworkDrive mapped in ThisComputer.currentlyMappedShares)
+            {
+                mappedShares.Add(mapped.LocalDrive + " " + mapped.ShareName);
+            }
+
+            mappedList.Items.Clear();
+            knownList.Items.Clear();
             AddToListBox(mappedList, mappedShares);
             AddToListBox(knownList, unmappedShares);
-            this.Refresh();
         }
 
         private void updateStatus(string status)
@@ -253,7 +277,5 @@ namespace drive_map_utility
             this.Refresh();
         }
         #endregion
-
-
     }
 }

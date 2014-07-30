@@ -38,6 +38,49 @@ namespace drive_map_utility
         }
         #endregion
 
+        #region Custom Methods
+
+        public json.Fileshare convertToFileshare()
+        {
+            json.Fileshare returnShare = json.matchNetDrivetoKnownFileshare(this);
+            if (returnShare == null)
+            {
+                //there was no match, create a new object
+                returnShare = convertToNewFileshare();
+            }
+
+            return returnShare;
+        }
+
+        public string convertToIdentifier()
+        {
+            string returnString;
+
+            json.Fileshare fileshareObject = this.convertToFileshare();
+            
+            returnString = fileshareObject.id + this.LocalDrive;
+
+            return returnString;
+        }
+
+        private json.Fileshare convertToNewFileshare()
+        {
+            json.Fileshare newShare = new json.Fileshare();
+
+            string[] splitString = this.ShareName.Split('\\');
+            string server = splitString[2];
+            string folder = splitString[3];
+
+            newShare.server = server;
+            newShare.folder = folder;
+            newShare.name = this.ShareName;
+            newShare.id = json.getNewID();
+
+            return newShare;
+        }
+
+        #endregion
+
         #region API
         [DllImport("mpr.dll")] private static extern int WNetAddConnection2A(ref structNetResource pstNetRes, string psPassword, string psUsername, int piFlags);
 		[DllImport("mpr.dll")] private static extern int WNetCancelConnection2A(string psName, int piFlags, int pfForce);
