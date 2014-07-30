@@ -45,6 +45,7 @@ namespace drive_map_utility
 
         private void addNewButton_Click(object sender, EventArgs e)
         {
+            // Creates a form where you can manually enter the new fileshare
             AddNewShare addNewForm = new AddNewShare();
             _formMediator = new FormMediator(this, addNewForm);
             addNewForm.Show(this);
@@ -117,6 +118,7 @@ namespace drive_map_utility
         {
             foreach (NetworkDrive drive in listOfDrives)
             {
+                // Ask for credentials to have access to the drive
                 drive.PromptForCredentials = true;
                 if (ThisComputer.isDriveLetterAvailable(drive.LocalDrive))
                 {
@@ -133,6 +135,7 @@ namespace drive_map_utility
         {
             foreach (NetworkDrive drive in listOfDrives)
             {
+                // Takes in the username and password
                 drive.MapDrive(username, password);
             }
         }
@@ -152,6 +155,7 @@ namespace drive_map_utility
             {
                 try
                 {
+                    // Separates the drive letter from the full path name
                     fullpath = shareName.Split(' ')[1];
                     driveLetter = shareName.Split(' ')[0];
                     matched = ThisComputer.matchPathToKnownDrive(fullpath);
@@ -162,7 +166,7 @@ namespace drive_map_utility
                     }
                     if (!driveLetter.Equals(matched.LocalDrive))
                     {
-                        matched.LocalDrive = driveLetter;
+                        matched.LocalDrive = driveLetter;   // Changes the drive letter to what is in the shareList
                     }
                     driveList.Add(matched);
                 }
@@ -183,6 +187,7 @@ namespace drive_map_utility
         {
             try
             {
+                // Removes item from one listbox and places into another
                 to.Items.Add(from.SelectedItem);
                 from.Items.Remove(from.SelectedItem);
             }
@@ -193,6 +198,7 @@ namespace drive_map_utility
         {
             for (int i = 0; i < from.Items.Count; i++)
             {
+                // Moves all items from one listbox to the other
                 to.Items.Add(from.Items[i].ToString());
             }
             from.Items.Clear(); 
@@ -208,6 +214,7 @@ namespace drive_map_utility
 
         private void setOutlineText()
         {
+            // Sets the current username to the form
             this.formOutline.Text = Environment.UserName;
             this.Refresh();
         }
