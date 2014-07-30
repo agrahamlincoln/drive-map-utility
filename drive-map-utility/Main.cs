@@ -228,6 +228,7 @@ namespace drive_map_utility
             List<string> mappedShares = new List<string>();
             List<string> unmappedShares = new List<string>();
 
+            //Add Drives from JSON
             NetworkDrive matched = null;
             if (ThisComputer.jsonCurrentUserDrives != null)
             {
@@ -246,9 +247,16 @@ namespace drive_map_utility
             else
             {
                 ProgramUtils.writeLog("Error: No user drives found.");
-                mappedShares.Add("No drives found.");
-                unmappedShares.Add("No drives found.");
+                mappedShares.Add("No drives found from json.");
+                unmappedShares.Add("No drives found from json.");
             }
+
+            //Add Drives from computer
+            foreach (NetworkDrive mapped in ThisComputer.currentlyMappedShares)
+            {
+                mappedShares.Add(mapped.LocalDrive + " " + mapped.ShareName);
+            }
+
             mappedList.Items.Clear();
             knownList.Items.Clear();
             AddToListBox(mappedList, mappedShares);
