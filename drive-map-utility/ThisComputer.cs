@@ -12,7 +12,7 @@ namespace drive_map_utility
     {
         //Class variables
         public static List<NetworkDrive> currentlyMappedShares = getCurrentlyMappedDrives();
-        public static List<NetworkDrive> jsonUsersFile = json.getUserDrivesFromJson();
+        public static List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson();
         public static List<NetworkDrive> jsonKnownShares = json.getKnownSharesFromJson();
 
         private static List<NetworkDrive> getCurrentlyMappedDrives()

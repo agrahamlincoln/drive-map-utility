@@ -145,7 +145,7 @@ namespace drive_map_utility
                 {
                     fullpath = shareName.Split(' ')[1];
                     driveLetter = shareName.Split(' ')[0];
-                    matched = ThisComputer.jsonUsersFile.Find(share => share.ShareName == fullpath);
+                    matched = ThisComputer.jsonCurrentUserDrives.Find(share => share.ShareName == fullpath);
                     if (!driveLetter.Equals(matched.LocalDrive))
                     {
                         matched.LocalDrive = driveLetter;
@@ -202,7 +202,7 @@ namespace drive_map_utility
         private List<NetworkDrive> getUnmappedDrives()
         {
             List<NetworkDrive> unmappedShares = new List<NetworkDrive>();
-            foreach (NetworkDrive share in ThisComputer.jsonUsersFile)
+            foreach (NetworkDrive share in ThisComputer.jsonCurrentUserDrives)
             {
                 if (!ThisComputer.isMapped(share))
                 {
@@ -220,9 +220,9 @@ namespace drive_map_utility
             List<string> unmappedShares = new List<string>();
 
             NetworkDrive matched = null;
-            if (ThisComputer.jsonUsersFile != null)
+            if (ThisComputer.jsonCurrentUserDrives != null)
             {
-                foreach (NetworkDrive share in ThisComputer.jsonUsersFile)
+                foreach (NetworkDrive share in ThisComputer.jsonCurrentUserDrives)
                 {
                     //check if share is mapped, otherwise put in other list
                     if (ThisComputer.isMapped(share))
