@@ -57,6 +57,7 @@
     <Compile Include="AddNewShare.designer.cs">
       <DependentUpon>AddNewShare.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormMediator.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>

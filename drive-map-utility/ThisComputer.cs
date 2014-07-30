@@ -47,7 +47,7 @@ namespace drive_map_utility
 
         #region Drive Letter Checking
 
-        private static List<char> getAvailableDriveLetters()
+        public static List<char> getAvailableDriveLetters()
         {
             List<char> driveLetters = getAlphabetUppercase();
 
@@ -58,20 +58,6 @@ namespace drive_map_utility
             }
 
             return driveLetters;
-        }
-
-        private static List<char> getAlphabetUppercase()
-        {
-            // Allocate space for alphabet
-            List<char> alphabet = new List<char>(26);
-
-            // increment from ASCII values for A-Z
-            for (int i = 65; i < 91; i++)
-            {
-                // Add uppercase letters to possible drive letters
-                alphabet.Add(Convert.ToChar(i));
-            }
-            return alphabet;
         }
 
         /** Returns charAt(1) if  there are no available drive letters.
@@ -127,6 +113,50 @@ namespace drive_map_utility
             return isAvailable;
         }
 
+        #endregion
+
+        public static NetworkDrive matchPathToUserDrive(string fullPath)
+        {
+            NetworkDrive match;
+            match = ThisComputer.jsonCurrentUserDrives.Find(share => share.ShareName == fullPath);
+            return match;
+        }
+
+        public static NetworkDrive matchPathtoKnownDrive(string fullPath)
+        {
+            NetworkDrive match;
+            match = ThisComputer.jsonKnownShares.Find(share => share.ShareName == fullPath);
+            return match;
+        }
+
+        public static bool isMapped(NetworkDrive drive)
+        {
+            bool isMapped = false;
+            List<NetworkDrive> currentDrives = getCurrentlyMappedDrives();
+
+            foreach (NetworkDrive currentDrive in currentDrives)
+                if (drive.ShareName.Equals(currentDrive.ShareName))
+                    isMapped = true;
+
+            return isMapped;
+        }
+
+        #region Utility Methods
+
+        private static List<char> getAlphabetUppercase()
+        {
+            // Allocate space for alphabet
+            List<char> alphabet = new List<char>(26);
+
+            // increment from ASCII values for A-Z
+            for (int i = 65; i < 91; i++)
+            {
+                // Add uppercase letters to possible drive letters
+                alphabet.Add(Convert.ToChar(i));
+            }
+            return alphabet;
+        }
+
         private static char parseLetter(string driveLetter)
         {
             Regex singleLetter = new Regex("^([A-z])");
@@ -144,18 +174,17 @@ namespace drive_map_utility
 
             return Convert.ToChar(driveLetter);
         }
-        #endregion
 
-        public static bool isMapped(NetworkDrive drive)
+        public static List<string> convertToList(List<NetworkDrive> netDrives)
         {
-            bool isMapped = false;
-            List<NetworkDrive> currentDrives = getCurrentlyMappedDrives();
-
-            foreach (NetworkDrive currentDrive in currentDrives)
-                if (drive.ShareName.Equals(currentDrive.ShareName))
-                    isMapped = true;
-
-            return isMapped;
+            List<string> stringList = new List<string>();
+            foreach (NetworkDrive drive in netDrives)
+            {
+                stringList.Add(drive.ShareName);
+            }
+            return stringList;
         }
+
+        #endregion
     }
 }

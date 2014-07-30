@@ -12,11 +12,19 @@ namespace drive_map_utility
 {
     public partial class Main : Form
     {
+        private FormMediator _formMediator;
+
         public Main()
         {
             InitializeComponent();
             setOutlineText();
             populateListBoxes();
+        }
+
+        public override void Refresh()
+        {
+            populateListBoxes();
+            base.Refresh();
         }
         #region Form Controls
 
@@ -38,7 +46,8 @@ namespace drive_map_utility
         private void addNewButton_Click(object sender, EventArgs e)
         {
             AddNewShare addNewForm = new AddNewShare();
-            addNewForm.Show();
+            _formMediator = new FormMediator(this, addNewForm);
+            addNewForm.Show(this);
         }
 
         private void Main_closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -145,7 +154,7 @@ namespace drive_map_utility
                 {
                     fullpath = shareName.Split(' ')[1];
                     driveLetter = shareName.Split(' ')[0];
-                    matched = ThisComputer.jsonCurrentUserDrives.Find(share => share.ShareName == fullpath);
+                    matched = ThisComputer.matchPathToUserDrive(fullpath);
                     if (!driveLetter.Equals(matched.LocalDrive))
                     {
                         matched.LocalDrive = driveLetter;
@@ -240,10 +249,10 @@ namespace drive_map_utility
                 mappedShares.Add("No drives found.");
                 unmappedShares.Add("No drives found.");
             }
-
+            mappedList.Items.Clear();
+            knownList.Items.Clear();
             AddToListBox(mappedList, mappedShares);
             AddToListBox(knownList, unmappedShares);
-            this.Refresh();
         }
 
         private void updateStatus(string status)

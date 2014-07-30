@@ -28,30 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.fileShareSelect = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.addButton = new System.Windows.Forms.Button();
+            this.driveLetterSelect = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.fullPathBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // comboBox1
+            // fileShareSelect
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(248, 21);
-            this.comboBox1.TabIndex = 0;
+            this.fileShareSelect.FormattingEnabled = true;
+            this.fileShareSelect.Location = new System.Drawing.Point(6, 19);
+            this.fileShareSelect.Name = "fileShareSelect";
+            this.fileShareSelect.Size = new System.Drawing.Size(248, 21);
+            this.fileShareSelect.TabIndex = 0;
+            this.fileShareSelect.SelectedValueChanged += new System.EventHandler(this.fileShareSelect_SelectedValueChanged);
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Controls.Add(this.fileShareSelect);
             this.groupBox1.Location = new System.Drawing.Point(12, 43);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(260, 49);
@@ -61,10 +62,10 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.button1);
-            this.groupBox2.Controls.Add(this.comboBox2);
+            this.groupBox2.Controls.Add(this.addButton);
+            this.groupBox2.Controls.Add(this.driveLetterSelect);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBox1);
+            this.groupBox2.Controls.Add(this.fullPathBox);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Location = new System.Drawing.Point(12, 98);
             this.groupBox2.Name = "groupBox2";
@@ -73,30 +74,23 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Network Drive Information";
             // 
-            // label1
+            // addButton
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(17, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Full Path";
+            this.addButton.Location = new System.Drawing.Point(133, 50);
+            this.addButton.Name = "addButton";
+            this.addButton.Size = new System.Drawing.Size(121, 23);
+            this.addButton.TabIndex = 5;
+            this.addButton.Text = "Add";
+            this.addButton.UseVisualStyleBackColor = true;
+            this.addButton.Click += new System.EventHandler(this.addButton_Click);
             // 
-            // textBox1
+            // driveLetterSelect
             // 
-            this.textBox1.Location = new System.Drawing.Point(71, 26);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(183, 20);
-            this.textBox1.TabIndex = 1;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(133, 50);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(121, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Add";
-            this.button1.UseVisualStyleBackColor = true;
+            this.driveLetterSelect.FormattingEnabled = true;
+            this.driveLetterSelect.Location = new System.Drawing.Point(71, 52);
+            this.driveLetterSelect.Name = "driveLetterSelect";
+            this.driveLetterSelect.Size = new System.Drawing.Size(56, 21);
+            this.driveLetterSelect.TabIndex = 3;
             // 
             // label2
             // 
@@ -107,13 +101,21 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Drive Letter";
             // 
-            // comboBox2
+            // fullPathBox
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(71, 52);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(56, 21);
-            this.comboBox2.TabIndex = 3;
+            this.fullPathBox.Location = new System.Drawing.Point(71, 26);
+            this.fullPathBox.Name = "fullPathBox";
+            this.fullPathBox.Size = new System.Drawing.Size(183, 20);
+            this.fullPathBox.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(17, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Full Path";
             // 
             // label3
             // 
@@ -135,6 +137,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "AddNewShare";
             this.Text = "AddNewShare";
+            this.Load += new System.EventHandler(this.AddNewShare_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -145,13 +148,13 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox fileShareSelect;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Button addButton;
+        private System.Windows.Forms.ComboBox driveLetterSelect;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox fullPathBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
     }
