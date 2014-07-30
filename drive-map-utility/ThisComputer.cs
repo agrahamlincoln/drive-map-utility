@@ -122,7 +122,7 @@ namespace drive_map_utility
             return match;
         }
 
-        public static NetworkDrive matchPathtoKnownDrive(string fullPath)
+        public static NetworkDrive matchPathToKnownDrive(string fullPath)
         {
             NetworkDrive match;
             match = ThisComputer.jsonKnownShares.Find(share => share.ShareName == fullPath);

@@ -60,7 +60,7 @@ namespace drive_map_utility
 
         private void addButton_Click(object sender, EventArgs e)
         {
-            NetworkDrive selectedDrive = ThisComputer.matchPathtoKnownDrive(fullPathBox.Text);
+            NetworkDrive selectedDrive = ThisComputer.matchPathToKnownDrive(fullPathBox.Text);
             selectedDrive.LocalDrive = driveLetterSelect.Text;
             ThisComputer.jsonCurrentUserDrives.Add(selectedDrive);
             this.Close();

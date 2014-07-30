@@ -154,7 +154,12 @@ namespace drive_map_utility
                 {
                     fullpath = shareName.Split(' ')[1];
                     driveLetter = shareName.Split(' ')[0];
-                    matched = ThisComputer.matchPathToUserDrive(fullpath);
+                    matched = ThisComputer.matchPathToKnownDrive(fullpath);
+                    if (matched == null)
+                    {
+                        //this drive is not known
+                        ProgramUtils.writeLog("Error: Drive is not Known");
+                    }
                     if (!driveLetter.Equals(matched.LocalDrive))
                     {
                         matched.LocalDrive = driveLetter;
@@ -163,7 +168,7 @@ namespace drive_map_utility
                 }
                 catch
                 {
-                    ProgramUtils.writeLog("Error while attempting to map drive: \"" + shareName + "\"");
+                    ProgramUtils.writeLog("Error while attempting to match drives from ListBox: \"" + shareName + "\"");
                 }
             }
 
