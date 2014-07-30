@@ -118,14 +118,14 @@ namespace drive_map_utility
         public static NetworkDrive matchPathToUserDrive(string fullPath)
         {
             NetworkDrive match;
-            match = ThisComputer.jsonCurrentUserDrives.Find(share => share.ShareName == fullPath);
+            match = ThisComputer.jsonCurrentUserDrives.Find(share => ProgramUtils.matchString(share.ShareName,fullPath));
             return match;
         }
 
         public static NetworkDrive matchPathToKnownDrive(string fullPath)
         {
             NetworkDrive match;
-            match = ThisComputer.jsonKnownShares.Find(share => share.ShareName == fullPath);
+            match = ThisComputer.jsonKnownShares.Find(share => ProgramUtils.matchString(share.ShareName, fullPath));
             return match;
         }
 

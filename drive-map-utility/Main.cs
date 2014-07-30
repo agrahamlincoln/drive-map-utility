@@ -148,17 +148,21 @@ namespace drive_map_utility
             List<NetworkDrive> driveList = new List<NetworkDrive>();
             NetworkDrive matched = null;
 
-            string fullpath;
+            string server;
+            string folder;
             string driveLetter;
+            string fullPath;
 
             foreach (string shareName in shareList.Items)
             {
                 try
                 {
                     // Separates the drive letter from the full path name
-                    fullpath = shareName.Split(' ')[1];
+                    server = shareName.Split('\\')[2];
+                    folder = shareName.Split('\\')[3];
+                    fullPath = "\\\\" + server + "\\" + folder;
                     driveLetter = shareName.Split(' ')[0];
-                    matched = ThisComputer.matchPathToKnownDrive(fullpath);
+                    matched = ThisComputer.matchPathToKnownDrive(fullPath);
                     if (matched == null)
                     {
                         //this drive is not known
