@@ -13,12 +13,12 @@ namespace drive_map_utility
     /** The methods in this class are intended to be utility methods that can be used on any program
      * Please do not add any program-specific methods here.
      */
-    class ProgramUtils
+    class ProgramUtils //rename to Utilities
     {
         const string TIMESTAMP_FORMAT = "MM/dd HH:mm:ss ffff";
         const string LOGFILE_NAME = "DriveMaps_log.txt";
 
-        public static bool matchString(string str1, string str2)
+        public static bool matchString_IgnoreCase(string str1, string str2)
         {
             bool isMatch = false;
             if (str1.Equals(str2, StringComparison.OrdinalIgnoreCase))

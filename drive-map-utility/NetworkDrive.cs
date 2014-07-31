@@ -22,6 +22,7 @@ namespace drive_map_utility
 	/// </summary>
 	public class NetworkDrive
     {
+        //add toString method
 
         #region Constructors
         public NetworkDrive() { }

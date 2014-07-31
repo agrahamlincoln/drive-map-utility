@@ -11,9 +11,9 @@ namespace drive_map_utility
     class ThisComputer
     {
         //Class variables
-        public static List<NetworkDrive> currentlyMappedShares = getCurrentlyMappedDrives();
-        public static List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson();
-        public static List<NetworkDrive> jsonKnownShares = json.getKnownSharesFromJson();
+        public static List<NetworkDrive> currentlyMappedShares = getCurrentlyMappedDrives(); //to be moved into Local class
+        public static List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson(); //to be moved into Local class
+        public static List<NetworkDrive> jsonKnownShares = json.getKnownSharesFromJson(); //to be moved into json class
 
         private static List<NetworkDrive> getCurrentlyMappedDrives()
         {
@@ -118,14 +118,14 @@ namespace drive_map_utility
         public static NetworkDrive matchPathToUserDrive(string fullPath)
         {
             NetworkDrive match;
-            match = ThisComputer.jsonCurrentUserDrives.Find(share => ProgramUtils.matchString(share.ShareName,fullPath));
+            match = ThisComputer.jsonCurrentUserDrives.Find(share => ProgramUtils.matchString_IgnoreCase(share.ShareName,fullPath));
             return match;
         }
 
         public static NetworkDrive matchPathToKnownDrive(string fullPath)
         {
             NetworkDrive match;
-            match = ThisComputer.jsonKnownShares.Find(share => ProgramUtils.matchString(share.ShareName, fullPath));
+            match = ThisComputer.jsonKnownShares.Find(share => ProgramUtils.matchString_IgnoreCase(share.ShareName, fullPath));
             return match;
         }
 

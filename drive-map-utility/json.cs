@@ -164,7 +164,6 @@ namespace drive_map_utility
         public static int getNewID()
         {
             int newID;
-            List<Fileshare> knownShares = enumKnownShares();
             int lastID = knownShares[knownShares.Count - 1].id;
             newID = lastID + 1;
             return newID;
@@ -176,8 +175,6 @@ namespace drive_map_utility
 
         public static Fileshare matchNetDrivetoKnownFileshare(NetworkDrive netDrive)
         {
-            List<Fileshare> knownShares = enumKnownShares();
-
             Fileshare returnShare = knownShares.Find(share => share.convertToNetworkDrive() == netDrive);
 
             if (returnShare == null)
@@ -192,12 +189,11 @@ namespace drive_map_utility
         public static List<NetworkDrive> getUserDrivesFromJson()
         {
             List<NetworkDrive> userDrives = null;
-            List<User> usersFromJson = enumUsers();
 
             //Get the currently logged in users' object
             int userIndex = findIndexOfCurrentlyLoggedInUserObj();
 
-            userDrives = usersFromJson[userIndex].convertToNetworkDrive();
+            userDrives = knownUsers[userIndex].convertToNetworkDrive();
 
             if (userDrives == null)
             {
@@ -215,21 +211,20 @@ namespace drive_map_utility
             int userIndex;
 
             List<User> users = json.enumUsers();
-            userIndex = users.FindIndex(user => user.username.Equals(Environment.UserName, StringComparison.OrdinalIgnoreCase));
+            userIndex = users.FindIndex(user => ProgramUtils.matchString_IgnoreCase(user.username, Environment.UserName));
 
             return userIndex;
         }
 
         public static List<NetworkDrive> getKnownSharesFromJson()
         {
-            List<NetworkDrive> knownShares = new List<NetworkDrive>();
-            List<Fileshare> enumerated = enumKnownShares();
+            List<NetworkDrive> netDrives = new List<NetworkDrive>();
 
-            foreach (Fileshare share in enumerated)
+            foreach (Fileshare share in knownShares)
             {
-                knownShares.Add(new NetworkDrive("\\\\" + share.server + "\\" + share.folder));
+                netDrives.Add(new NetworkDrive("\\\\" + share.server + "\\" + share.folder));
             }
-            return knownShares;
+            return netDrives;
         }
         #endregion
 
