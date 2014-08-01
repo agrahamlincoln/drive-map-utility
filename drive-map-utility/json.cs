@@ -27,6 +27,7 @@ namespace drive_map_utility
 
         public class Fileshare
         {
+            // Reads from the json files and set the values below
             [JsonProperty("id")]
             public int id { get; set; }
             public string name { get; set; }
@@ -36,6 +37,7 @@ namespace drive_map_utility
 
             public NetworkDrive convertToNetworkDrive()
             {
+                // Setting the sharename in NetworkDrive.cs to \\\\-servername-\\-foldername- (accessed from above code snipit)
                 NetworkDrive netDrive = new NetworkDrive();
                 netDrive.ShareName = "\\\\" + server + "\\" + folder;
 
@@ -44,6 +46,7 @@ namespace drive_map_utility
 
             public NetworkDrive convertToNetworkDrive(string driveLetter)
             {
+                // Sets the drive letter
                 NetworkDrive netDrive = this.convertToNetworkDrive();
                 netDrive.LocalDrive = driveLetter;
                 return netDrive;
@@ -61,6 +64,7 @@ namespace drive_map_utility
 
             public User(string uname)
             {
+                // Sets the username
                 this.username = uname;
             }
 
