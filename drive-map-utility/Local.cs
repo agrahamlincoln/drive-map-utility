@@ -16,7 +16,6 @@ namespace drive_map_utility
     /// </remarks>
     class Local
     {
-        public static string localUser = Environment.UserName;
         public static List<NetworkDrive> currentlyMappedDrives = getCurrentlyMappedDrives(); //to be moved into Local class
         public static List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson(); //to be moved into Local class
 
