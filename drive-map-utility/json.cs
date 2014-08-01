@@ -158,6 +158,7 @@ namespace drive_map_utility
         /// <returns>ID to assign to a fileshare</returns>
         public static int getNewID()
         {
+            // Sets up new ID as the next element in the knowShares
             int newID;
             int lastID = knownShares[knownShares.Count - 1].id;
             newID = lastID + 1;
@@ -175,6 +176,7 @@ namespace drive_map_utility
         /// <returns>Fileshare object that the netdrive matches.</returns>
         public static Fileshare matchNetDrivetoKnownFileshare(NetworkDrive netDrive)
         {
+            // Checks to see if the known share is the same as the netDrive
             Fileshare returnShare = knownShares.Find(share => share.convertToNetworkDrive() == netDrive);
 
             if (returnShare == null)
