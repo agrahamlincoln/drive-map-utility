@@ -21,9 +21,9 @@ namespace drive_map_utility
         static string SHARES_JSON_FULL_FILEPATH = Program.readFromAppConfig("knownsharesJson_Path") + "\\" + LIST_SHARES_FILENAME;
 
         //Class Variables
-        private List<Fileshare> knownShares = enumKnownShares();
-        private List<User> knownUsers = enumUsers();
-        private List<NetworkDrive> jsonKnownShares = ListConvert(knownShares); //to be moved into json class
+        private static List<Fileshare> knownShares = enumKnownShares();
+        private static List<User> knownUsers = enumUsers();
+        public static List<NetworkDrive> jsonKnownShares = ListConvert(knownShares); //to be moved into json class
 
         public class Fileshare
         {
@@ -232,18 +232,7 @@ namespace drive_map_utility
 
         #region modify methods
 
-        public void addFileshare(NetworkDrive netDrive)
-        {
-            if (netDrive.LocalDrive == "" || netDrive.LocalDrive == null)
-            {
-                //no drive letter found on this network drive object
-                //Set Drive letter to the one found in knownshares.json
-                NetworkDrive matched = this.jsonKnownShares.Find(share => share.ShareName == netDrive.ShareName);
-                netDrive.LocalDrive = matched.LocalDrive;
-            }
 
-            ThisComputer.jsonCurrentUserDrives.Add(netDrive);
-        }
 
         public void updateUsersJson()
         {
@@ -259,7 +248,7 @@ namespace drive_map_utility
             }
 
             //edit the User Object
-            List<NetworkDrive> currentUserShares = ThisComputer.jsonCurrentUserDrives;
+            List<NetworkDrive> currentUserShares = Local.jsonCurrentUserDrives;
             foreach (NetworkDrive drive in currentUserShares)
             {
                 string shareID = drive.convertToIdentifier();

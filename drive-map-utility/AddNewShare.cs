@@ -20,7 +20,7 @@ namespace drive_map_utility
 
         private void fillFileShareSelect()
         {
-            List<string> datasource = convertToStringList(ThisComputer.jsonKnownShares);
+            List<string> datasource = Program.convertToStringList(json.jsonKnownShares);
 
             foreach (string item in datasource)
             {
@@ -31,7 +31,7 @@ namespace drive_map_utility
 
         private void fillDriveLetterSelect()
         {
-            List<char> availableLetters = ThisComputer.getAvailableDriveLetters();
+            List<char> availableLetters = Local.getAvailableDriveLetters();
             foreach (char letter in availableLetters)
             {
                 driveLetterSelect.Items.Add(letter);
@@ -60,9 +60,9 @@ namespace drive_map_utility
 
         private void addButton_Click(object sender, EventArgs e)
         {
-            NetworkDrive selectedDrive = ThisComputer.matchPathToKnownDrive(fullPathBox.Text);
+            NetworkDrive selectedDrive = Program.findDriveInList(fullPathBox.Text, json.jsonKnownShares);
             selectedDrive.LocalDrive = driveLetterSelect.Text;
-            ThisComputer.jsonCurrentUserDrives.Add(selectedDrive);
+            Local.jsonCurrentUserDrives.Add(selectedDrive);
             this.Close();
         }
 

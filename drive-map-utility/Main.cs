@@ -14,7 +14,6 @@ namespace drive_map_utility
     {
 
         //Instantiate all program-level objects
-        public Local currentPC = new Local();
         private FormMediator _formMediator;
 
         public Main()
@@ -102,7 +101,7 @@ namespace drive_map_utility
             foreach (NetworkDrive share in drivesFromListBox)
             {
                 //if the share matches the bool value currently mapped
-                if (currentPC.hasMapping(share) == isMapped)
+                if (Local.hasMapping(share) == isMapped)
                 {
                     matchedDrives.Add(share);
                 }
@@ -165,7 +164,7 @@ namespace drive_map_utility
                     folder = shareName.Split('\\')[3];
                     fullPath = "\\\\" + server + "\\" + folder;
                     driveLetter = shareName.Split(' ')[0];
-                    matched = Program.findDriveInList(fullPath, currentPC.jsonCurrentUserDrives);
+                    matched = Program.findDriveInList(fullPath, Local.jsonCurrentUserDrives);
                     if (matched == null)
                     {
                         //this drive is not known
@@ -179,7 +178,7 @@ namespace drive_map_utility
                 }
                 catch
                 {
-                    Itilities.writeLog("Error while attempting to match drives from ListBox: \"" + shareName + "\"");
+                    Utilities.writeLog("Error while attempting to match drives from ListBox: \"" + shareName + "\"");
                 }
             }
 
@@ -230,9 +229,9 @@ namespace drive_map_utility
         private List<NetworkDrive> getUnmappedDrives()
         {
             List<NetworkDrive> unmappedShares = new List<NetworkDrive>();
-            foreach (NetworkDrive share in ThisComputer.jsonCurrentUserDrives)
+            foreach (NetworkDrive share in Local.jsonCurrentUserDrives)
             {
-                if (!ThisComputer.isMapped(share))
+                if (!Local.hasMapping(share))
                 {
                     unmappedShares.Add(share);
                 }
@@ -249,14 +248,14 @@ namespace drive_map_utility
 
             //Add Drives from JSON
             NetworkDrive matched = null;
-            if (ThisComputer.jsonCurrentUserDrives != null)
+            if (Local.jsonCurrentUserDrives != null)
             {
-                foreach (NetworkDrive share in ThisComputer.jsonCurrentUserDrives)
+                foreach (NetworkDrive share in Local.jsonCurrentUserDrives)
                 {
                     //check if share is mapped, otherwise put in other list
-                    if (ThisComputer.isMapped(share))
+                    if (Local.hasMapping(share))
                     {
-                        matched = ThisComputer.currentlyMappedShares.Find(item => item.ShareName == share.ShareName);
+                        matched = Local.currentlyMappedDrives.Find(item => item.ShareName == share.ShareName);
                         mappedShares.Add(matched.LocalDrive + " " + share.ShareName);
                     }
                     else
@@ -265,13 +264,13 @@ namespace drive_map_utility
             }
             else
             {
-                ProgramUtils.writeLog("Error: No user drives found.");
+                Utilities.writeLog("Error: No user drives found.");
                 mappedShares.Add("No drives found from json.");
                 unmappedShares.Add("No drives found from json.");
             }
 
             //Add Drives from computer
-            foreach (NetworkDrive mapped in ThisComputer.currentlyMappedShares)
+            foreach (NetworkDrive mapped in Local.currentlyMappedDrives)
             {
                 mappedShares.Add(mapped.LocalDrive + " " + mapped.ShareName);
             }

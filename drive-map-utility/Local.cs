@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace drive_map_utility
 {
@@ -15,13 +16,23 @@ namespace drive_map_utility
     /// </remarks>
     class Local
     {
-        public List<NetworkDrive> currentlyMappedDrives { get; set; } //to be moved into Local class
-        public List<NetworkDrive> jsonCurrentUserDrives { get; set; } //to be moved into Local class
+        public static List<NetworkDrive> currentlyMappedDrives = getCurrentlyMappedDrives(); //to be moved into Local class
+        public static List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson(); //to be moved into Local class
 
-        public Local()
+        /// <summary>Adds a Network Drive object to the current user's json object
+        /// </summary>
+        /// <param name="netDrive"></param>
+        public void addFileshare(NetworkDrive netDrive)
         {
-            this.currentlyMappedDrives = getCurrentlyMappedDrives();
-            this.jsonCurrentUserDrives = json.getUserDrivesFromJson();
+            if (netDrive.LocalDrive == "" || netDrive.LocalDrive == null)
+            {
+                //no drive letter found on this network drive object
+                //Set Drive letter to the one found in knownshares.json
+                NetworkDrive matched = Program.findDriveInList(netDrive.ShareName, json.jsonKnownShares);
+                netDrive.LocalDrive = matched.LocalDrive;
+            }
+
+            Local.jsonCurrentUserDrives.Add(netDrive);
         }
 
         #region Computer Information Queries
@@ -32,20 +43,20 @@ namespace drive_map_utility
         public static bool HasNet35()
         {
             bool returnValue = false;
-            List<string> versions = GetVersionFromRegistry(true);
+            List<string> versions = GetVersionFromRegistry();
             Regex netVersion = new Regex("(v3\\.5|v4.0|v4)+");
 
             foreach (string ver in versions)
             {
                 if (netVersion.IsMatch(ver))
                 {
-                    writeLog(".NET version " + ver + " is installed.");
+                    Utilities.writeLog(".NET version " + ver + " is installed.");
                     returnValue = true;
                     break;
                 }
             }
             if (returnValue == false)
-                writeLog(".NET 3.5 must be installed to run this.");
+                Utilities.writeLog(".NET 3.5 must be installed to run this.");
             return returnValue;
         }
 
@@ -124,7 +135,7 @@ namespace drive_map_utility
         /// <summary>Read all network connections using WMI and generate a list of Network Drives
         /// </summary>
         /// <returns>NetworkDrive List -- All Currently mapped drives on this machine.</returns>
-        private List<NetworkDrive> getCurrentlyMappedDrives()
+        private static List<NetworkDrive> getCurrentlyMappedDrives()
         {
             List<NetworkDrive> mappedDrives = new List<NetworkDrive>();
             try
@@ -158,12 +169,12 @@ namespace drive_map_utility
         /// </summary>
         /// <param name="drive">Network Drive to check.</param>
         /// <returns>Boolean value of whether drive is mapped or not.</returns>
-        public bool hasMapping(NetworkDrive drive)
+        public static bool hasMapping(NetworkDrive drive)
         {
             // Checks to see if the current drive is mapped already
             bool isMapped = false;
 
-            foreach (NetworkDrive currentDrive in this.currentlyMappedDrives)
+            foreach (NetworkDrive currentDrive in currentlyMappedDrives)
                 if (drive.ShareName.Equals(currentDrive.ShareName))
                     isMapped = true;
 
