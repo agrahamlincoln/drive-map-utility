@@ -121,7 +121,7 @@ namespace drive_map_utility
             foreach (NetworkDrive drive in listOfDrives)
             {
                 // Ask for credentials to have access to the drive
-                drive.PromptForCredentials = true;
+                //drive.PromptForCredentials = true;
                 if (Local.isDriveLetterAvailable(drive.LocalDrive))
                 {
                     drive.MapDrive();
@@ -284,9 +284,14 @@ namespace drive_map_utility
         private void updateStatus(string status)
         {
             //update statusbar and refresh
-            this.statusBar.Text = status;
+            this.toolStripStatusLabel1.Text = status;
             this.Refresh();
         }
         #endregion
+
+        private void toolStripStatusLabel1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

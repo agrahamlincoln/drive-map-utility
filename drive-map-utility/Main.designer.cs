@@ -50,6 +50,8 @@
             this.passwordTxtBox = new System.Windows.Forms.TextBox();
             this.usernameTxtBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusBar.SuspendLayout();
             this.formOutline.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -73,6 +75,8 @@
             // 
             // statusBar
             // 
+            this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
             this.statusBar.Location = new System.Drawing.Point(0, 398);
             this.statusBar.Name = "statusBar";
             this.statusBar.Size = new System.Drawing.Size(490, 22);
@@ -280,6 +284,13 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Login";
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -293,6 +304,8 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Main";
             this.Text = "Form1";
+            this.statusBar.ResumeLayout(false);
+            this.statusBar.PerformLayout();
             this.formOutline.ResumeLayout(false);
             this.formOutline.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -328,6 +341,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button unmapAll_btn;
         private System.Windows.Forms.Button mapAll_btn;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
 

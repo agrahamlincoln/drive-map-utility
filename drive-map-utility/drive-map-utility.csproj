@@ -58,6 +58,9 @@
       <DependentUpon>AddNewShare.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMediator.cs" />
+    <Compile Include="frmTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Local.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -94,6 +97,9 @@
     </Compile>
     <EmbeddedResource Include="AddNewShare.resx">
       <DependentUpon>AddNewShare.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTest.resx">
+      <DependentUpon>frmTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
