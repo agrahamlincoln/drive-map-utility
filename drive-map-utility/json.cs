@@ -20,8 +20,10 @@ namespace drive_map_utility
         static string USERS_JSON_FULL_FILEPATH = Program.readFromAppConfig("usersJson_Path") + "\\" + LIST_USERS_FILENAME;
         static string SHARES_JSON_FULL_FILEPATH = Program.readFromAppConfig("knownsharesJson_Path") + "\\" + LIST_SHARES_FILENAME;
 
-        private static List<Fileshare> knownShares = enumKnownShares();
-        private static List<User> knownUsers = enumUsers();
+        //Class Variables
+        private List<Fileshare> knownShares = enumKnownShares();
+        private List<User> knownUsers = enumUsers();
+        private List<NetworkDrive> jsonKnownShares = ListConvert(knownShares); //to be moved into json class
 
         public class Fileshare
         {
@@ -116,7 +118,7 @@ namespace drive_map_utility
             }
             catch
             {
-                ProgramUtils.writeLog("Error: unable to read knownshares.json file");
+                Utilities.writeLog("Error: unable to read knownshares.json file");
             }
 
             return knownShares;
@@ -136,7 +138,7 @@ namespace drive_map_utility
             }
             catch
             {
-                ProgramUtils.writeLog("Error: unable to read users.json file");
+                Utilities.writeLog("Error: unable to read users.json file");
             }
 
             return users;
@@ -179,7 +181,7 @@ namespace drive_map_utility
 
             if (returnShare == null)
             {
-                ProgramUtils.writeLog("Could not match NetDrive to share, returning null");
+                Utilities.writeLog("Could not match NetDrive to share, returning null");
 
             }
 
@@ -197,7 +199,7 @@ namespace drive_map_utility
 
             if (userDrives == null)
             {
-                ProgramUtils.writeLog("Could not find a user or any network drives");
+                Utilities.writeLog("Could not find a user or any network drives");
             }
 
             return userDrives;
@@ -211,16 +213,16 @@ namespace drive_map_utility
             int userIndex;
 
             List<User> users = json.enumUsers();
-            userIndex = users.FindIndex(user => ProgramUtils.matchString_IgnoreCase(user.username, Environment.UserName));
+            userIndex = users.FindIndex(user => Utilities.matchString_IgnoreCase(user.username, Environment.UserName));
 
             return userIndex;
         }
 
-        public static List<NetworkDrive> getKnownSharesFromJson()
+        public static List<NetworkDrive> ListConvert(List<Fileshare> fileshares)
         {
             List<NetworkDrive> netDrives = new List<NetworkDrive>();
 
-            foreach (Fileshare share in knownShares)
+            foreach (Fileshare share in fileshares)
             {
                 netDrives.Add(new NetworkDrive("\\\\" + share.server + "\\" + share.folder));
             }
@@ -236,7 +238,7 @@ namespace drive_map_utility
             {
                 //no drive letter found on this network drive object
                 //Set Drive letter to the one found in knownshares.json
-                NetworkDrive matched = ThisComputer.jsonKnownShares.Find(share => share.ShareName == netDrive.ShareName);
+                NetworkDrive matched = this.jsonKnownShares.Find(share => share.ShareName == netDrive.ShareName);
                 netDrive.LocalDrive = matched.LocalDrive;
             }
 

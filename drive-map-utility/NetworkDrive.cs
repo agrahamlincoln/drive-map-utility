@@ -22,7 +22,10 @@ namespace drive_map_utility
 	/// </summary>
 	public class NetworkDrive
     {
-        //add toString method
+        public string toString()
+        {
+            return this.LocalDrive + " " + this.ShareName;
+        }
 
         #region Constructors
         public NetworkDrive() { }
