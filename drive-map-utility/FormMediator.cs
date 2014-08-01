@@ -21,6 +21,7 @@ namespace drive_map_utility
             _mainForm = mainForm;
             _subForm = subForm;
 
+            // Close the sub form and refresh the main form
             _subForm.FormClosed += MainForm_FormClosed;
         }
 

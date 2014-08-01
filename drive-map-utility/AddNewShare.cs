@@ -20,6 +20,7 @@ namespace drive_map_utility
 
         private void fillFileShareSelect()
         {
+            // This list all the known shares into the combo box "File Share Select"
             List<string> datasource = Program.convertToStringList(json.jsonKnownShares);
 
             foreach (string item in datasource)
@@ -31,6 +32,7 @@ namespace drive_map_utility
 
         private void fillDriveLetterSelect()
         {
+            // Checks for the available drive letters and fills the combo box "drive letter select" with them
             List<char> availableLetters = Local.getAvailableDriveLetters();
             foreach (char letter in availableLetters)
             {
@@ -41,6 +43,7 @@ namespace drive_map_utility
 
         private void updateFullPathBox()
         {
+            // Fills the text box with the full file path that was selected
             fullPathBox.Text = fileShareSelect.SelectedItem.ToString();
             this.Refresh();
         }
@@ -49,6 +52,7 @@ namespace drive_map_utility
 
         private void AddNewShare_Load(object sender, EventArgs e)
         {
+            // Loads the available shares and drive letters
             fillFileShareSelect();
             fillDriveLetterSelect();
         }
@@ -60,6 +64,7 @@ namespace drive_map_utility
 
         private void addButton_Click(object sender, EventArgs e)
         {
+            // Adds the new share to current user drives and closes this form
             NetworkDrive selectedDrive = Program.findDriveInList(fullPathBox.Text, json.jsonKnownShares);
             selectedDrive.LocalDrive = driveLetterSelect.Text;
             Local.jsonCurrentUserDrives.Add(selectedDrive);
