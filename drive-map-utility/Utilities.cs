@@ -102,5 +102,16 @@ namespace drive_map_utility
 
             return Convert.ToChar(str);
         }
+
+        /// <summary>Reads an entire file.
+        /// </summary>
+        /// <param name="fullPath">Full UNC Path of the file</param>
+        /// <returns>string of the entire file</returns>
+        public static string readFile(string fullPath)
+        {
+            //Read json from file on network
+            StreamReader file = new StreamReader(fullPath);
+            return file.ReadToEnd();
+        }
     }
 }

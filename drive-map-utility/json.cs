@@ -23,8 +23,11 @@ namespace drive_map_utility
         //Class Variables
         private static List<Fileshare> knownShares = enumKnownShares();
         private static List<User> knownUsers = enumUsers();
+        private static int currentUserIndex = getIndexofCurrentlyLoggedInUser();
         public static List<NetworkDrive> jsonKnownShares = ListConvert(knownShares); //to be moved into json class
 
+        /// <summary>Utility Class Fileshare stores json serialized objects with Fileshare information.
+        /// </summary>
         public class Fileshare
         {
             // Reads from the json files and set the values below
@@ -54,6 +57,8 @@ namespace drive_map_utility
 
         }
 
+        /// <summary>Utility class User stores json serialized objects with User information.
+        /// </summary>
         public class User
         {
             [JsonProperty("username")]
@@ -107,9 +112,10 @@ namespace drive_map_utility
         }
 
         #region Read from JSON file
-        /* Create list of fileshares from knownshares file
-         * Returns List of "Fileshare" objects that represent all known fileshares.
-         */
+
+        /// <summary>Deserializes the Json String from known shares file
+        /// </summary>
+        /// <returns>Fileshare object List of all known shares</returns>
         private static List<Fileshare> enumKnownShares()
         {
             //List of fileshares to return
@@ -117,7 +123,7 @@ namespace drive_map_utility
 
             try
             {
-                string jsonString = getJsonStringFromKnownFileshares();
+                string jsonString = Utilities.readFile(USERS_JSON_FULL_FILEPATH);
                 knownShares = JsonConvert.DeserializeObject<List<Fileshare>>(jsonString);
             }
             catch
@@ -128,16 +134,15 @@ namespace drive_map_utility
             return knownShares;
         }
 
-        /* Enumerates list of all users from file
-         * Stores all the users as a "User" object
-         * Returns: List<User> users from file.
-         */
+        /// <summary>Deserializes the Json String from the users file
+        /// </summary>
+        /// <returns>User object List of all users from the users json file.</returns>
         private static List<User> enumUsers()
         {
             List<User> users = new List<User>();
             try
             {
-                string jsonString = getJsonStringFromUsers();
+                string jsonString = Utilities.readFile(SHARES_JSON_FULL_FILEPATH);
                 users = JsonConvert.DeserializeObject<List<User>>(jsonString);
             }
             catch
@@ -148,25 +153,9 @@ namespace drive_map_utility
             return users;
         }
 
-        private static string getJsonStringFromUsers()
-        {
-            string fullPath = USERS_JSON_FULL_FILEPATH;
-            return getJsonString(fullPath);
-        }
-
-        private static string getJsonStringFromKnownFileshares()
-        {
-            string fullPath = SHARES_JSON_FULL_FILEPATH;
-            return getJsonString(fullPath);
-        }
-
-        private static string getJsonString(string fullPath)
-        {
-            //Read json from file on network
-            StreamReader file = new StreamReader(fullPath);
-            return file.ReadToEnd();
-        }
-
+        /// <summary>Gets the next fileshare ID in the list
+        /// </summary>
+        /// <returns>ID to assign to a fileshare</returns>
         public static int getNewID()
         {
             int newID;
@@ -179,6 +168,11 @@ namespace drive_map_utility
 
         #region Data Processing
 
+        /// <summary>Matches a network drive to a fileshare (serialized) object.
+        /// </summary>
+        /// <remarks>Returns null if nothing found.</remarks>
+        /// <param name="netDrive">Network drive to match</param>
+        /// <returns>Fileshare object that the netdrive matches.</returns>
         public static Fileshare matchNetDrivetoKnownFileshare(NetworkDrive netDrive)
         {
             Fileshare returnShare = knownShares.Find(share => share.convertToNetworkDrive() == netDrive);
@@ -192,14 +186,16 @@ namespace drive_map_utility
             return returnShare;
         }
 
+        #region Users Json
+
+        /// <summary>Retrieves the list of network drives for the currently logged in user.
+        /// </summary>
+        /// <returns>Network Drive List of all network drives related to the current user.</returns>
         public static List<NetworkDrive> getUserDrivesFromJson()
         {
             List<NetworkDrive> userDrives = null;
 
-            //Get the currently logged in users' object
-            int userIndex = findIndexOfCurrentlyLoggedInUserObj();
-
-            userDrives = knownUsers[userIndex].convertToNetworkDrive();
+            userDrives = knownUsers[currentUserIndex].convertToNetworkDrive();
 
             if (userDrives == null)
             {
@@ -209,19 +205,19 @@ namespace drive_map_utility
             return userDrives;
         }
 
-        /**
-         * Returns -1 if it cannot find the index
-        */
-        private static int findIndexOfCurrentlyLoggedInUserObj()
+        /// <summary>Returns integer of index of the current user in the userList
+        /// </summary>
+        /// <returns>index of the current user in the userlist.</returns>
+        public static int getIndexofCurrentlyLoggedInUser()
         {
-            int userIndex;
-
-            List<User> users = json.enumUsers();
-            userIndex = users.FindIndex(user => Utilities.matchString_IgnoreCase(user.username, Environment.UserName));
-
-            return userIndex;
+            return knownUsers.FindIndex(user => Utilities.matchString_IgnoreCase(user.username, Local.localUser));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileshares"></param>
+        /// <returns></returns>
         public static List<NetworkDrive> ListConvert(List<Fileshare> fileshares)
         {
             List<NetworkDrive> netDrives = new List<NetworkDrive>();
@@ -232,11 +228,6 @@ namespace drive_map_utility
             }
             return netDrives;
         }
-        #endregion
-
-        #region modify methods
-
-
 
         public void updateUsersJson()
         {
@@ -244,8 +235,8 @@ namespace drive_map_utility
             List<User> allUsersFromFile = enumUsers();
 
             //find the current user object
-            int userIndex = findIndexOfCurrentlyLoggedInUserObj();
-            if (userIndex == -1)
+            int userIndex = getIndexofCurrentlyLoggedInUser();
+            if (currentUserIndex == -1)
             {
                 //no user exists; create one
                 allUsersFromFile.Add(new User(Environment.UserName));
@@ -256,7 +247,7 @@ namespace drive_map_utility
             foreach (NetworkDrive drive in currentUserShares)
             {
                 string shareID = drive.convertToIdentifier();
-                allUsersFromFile[userIndex].fileshares.Add(shareID);
+                allUsersFromFile[currentUserIndex].fileshares.Add(shareID);
             }
 
             //write json back to file (overwrite)
