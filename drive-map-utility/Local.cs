@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text;
@@ -14,8 +15,14 @@ namespace drive_map_utility
     /// </remarks>
     class Local
     {
-        public List<NetworkDrive> currentlyMappedDrives = getCurrentlyMappedDrives(); //to be moved into Local class
-        public List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson(); //to be moved into Local class
+        public List<NetworkDrive> currentlyMappedDrives { get; set; } //to be moved into Local class
+        public List<NetworkDrive> jsonCurrentUserDrives { get; set; } //to be moved into Local class
+
+        public Local()
+        {
+            this.currentlyMappedDrives = getCurrentlyMappedDrives();
+            this.jsonCurrentUserDrives = json.getUserDrivesFromJson();
+        }
 
         #region Computer Information Queries
 
@@ -117,7 +124,7 @@ namespace drive_map_utility
         /// <summary>Read all network connections using WMI and generate a list of Network Drives
         /// </summary>
         /// <returns>NetworkDrive List -- All Currently mapped drives on this machine.</returns>
-        private static List<NetworkDrive> getCurrentlyMappedDrives()
+        private List<NetworkDrive> getCurrentlyMappedDrives()
         {
             List<NetworkDrive> mappedDrives = new List<NetworkDrive>();
             try
@@ -151,7 +158,7 @@ namespace drive_map_utility
         /// </summary>
         /// <param name="drive">Network Drive to check.</param>
         /// <returns>Boolean value of whether drive is mapped or not.</returns>
-        public bool isMapped(NetworkDrive drive)
+        public bool hasMapping(NetworkDrive drive)
         {
             // Checks to see if the current drive is mapped already
             bool isMapped = false;
@@ -171,7 +178,7 @@ namespace drive_map_utility
         /// <returns> char List -- All Available drive letters on this machine</returns>
         public static List<char> getAvailableDriveLetters()
         {
-            List<char> driveLetters = getAlphabetUppercase();
+            List<char> driveLetters = Utilities.getAlphabetUppercase();
 
             foreach (string drive in Directory.GetLogicalDrives())
             {

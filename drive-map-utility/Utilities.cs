@@ -67,7 +67,7 @@ namespace drive_map_utility
         /// <summary>Generates a List of all 26 Uppercase letters in the alphabet.
         /// </summary>
         /// <returns>char List of all letters in the alphabet (Uppercase)</returns>
-        private static List<char> getAlphabetUppercase()
+        public static List<char> getAlphabetUppercase()
         {
             // Allocate space for alphabet
             List<char> alphabet = new List<char>(26);

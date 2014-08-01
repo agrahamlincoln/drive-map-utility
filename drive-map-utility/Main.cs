@@ -12,6 +12,9 @@ namespace drive_map_utility
 {
     public partial class Main : Form
     {
+
+        //Instantiate all program-level objects
+        public Local currentPC = new Local();
         private FormMediator _formMediator;
 
         public Main()
@@ -99,7 +102,7 @@ namespace drive_map_utility
             foreach (NetworkDrive share in drivesFromListBox)
             {
                 //if the share matches the bool value currently mapped
-                if (ThisComputer.isMapped(share) == isMapped)
+                if (currentPC.hasMapping(share) == isMapped)
                 {
                     matchedDrives.Add(share);
                 }
@@ -120,13 +123,13 @@ namespace drive_map_utility
             {
                 // Ask for credentials to have access to the drive
                 drive.PromptForCredentials = true;
-                if (ThisComputer.isDriveLetterAvailable(drive.LocalDrive))
+                if (Local.isDriveLetterAvailable(drive.LocalDrive))
                 {
                     drive.MapDrive();
                 }
                 else
                 {
-                    drive.LocalDrive = ThisComputer.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
+                    drive.LocalDrive = Local.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
                     drive.MapDrive();
                 }
             }
@@ -162,11 +165,11 @@ namespace drive_map_utility
                     folder = shareName.Split('\\')[3];
                     fullPath = "\\\\" + server + "\\" + folder;
                     driveLetter = shareName.Split(' ')[0];
-                    matched = ThisComputer.matchPathToKnownDrive(fullPath);
+                    matched = Program.findDriveInList(fullPath, currentPC.jsonCurrentUserDrives);
                     if (matched == null)
                     {
                         //this drive is not known
-                        ProgramUtils.writeLog("Error: Drive is not Known");
+                        Utilities.writeLog("Error: Drive is not Known");
                     }
                     if (!driveLetter.Equals(matched.LocalDrive))
                     {
@@ -176,7 +179,7 @@ namespace drive_map_utility
                 }
                 catch
                 {
-                    ProgramUtils.writeLog("Error while attempting to match drives from ListBox: \"" + shareName + "\"");
+                    Itilities.writeLog("Error while attempting to match drives from ListBox: \"" + shareName + "\"");
                 }
             }
 
