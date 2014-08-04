@@ -297,6 +297,10 @@ namespace drive_map_utility
             sWriter.Close();
         }
 
+        public static void addNewFileshare(Fileshare fsObject)
+        {
+        }
+
         #endregion
 
     }
