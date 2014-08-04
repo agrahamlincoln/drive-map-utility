@@ -12,6 +12,8 @@ using Newtonsoft.Json.Linq;
 
 namespace drive_map_utility
 {
+    /// <summary>This class stores all information regarding JSON reading, writing, and operations on the data from these files.
+    /// </summary>
     public class json
     {
         const string LIST_SHARES_FILENAME = "knownshares.json";
@@ -23,7 +25,10 @@ namespace drive_map_utility
         //Class Variables
         private static List<Fileshare> knownShares = enumKnownShares();
         private static List<User> knownUsers = enumUsers();
-        public static List<NetworkDrive> jsonKnownShares = ListConvert(knownShares); //to be moved into json class
+
+        /// <summary>jsonKnownShares -- List of all shares enumerated from the knownshares.json file.
+        /// </summary>
+        public static List<NetworkDrive> jsonKnownShares = ListConvert(knownShares);
 
         /// <summary>Utility Class Fileshare stores json serialized objects with Fileshare information.
         /// </summary>
@@ -64,12 +69,12 @@ namespace drive_map_utility
             //Class Variables
             public string username { get; set; }
             public List<string> fileshares { get; set; }
-            public List<NetworkDrive> fileshares_Obj { get; set; }
 
             public User(string uname)
             {
                 // Sets the username
                 this.username = uname;
+                this.fileshares = new List<string>();
             }
 
             public List<NetworkDrive> convertToNetworkDriveList()
@@ -192,11 +197,15 @@ namespace drive_map_utility
         /// <returns>Network Drive List of all network drives related to the current user.</returns>
         public static List<NetworkDrive> getUserDrivesFromJson()
         {
-            List<NetworkDrive> userDrives = null;
+            List<NetworkDrive> userDrives = new List<NetworkDrive>();
             int currentUserIndex = getIndexofCurrentlyLoggedInUser();
             if (currentUserIndex == -1)
             {
                 //there is no user in the userfile.
+                //check that the knownUsers is instanciated
+                if (knownUsers == null)
+                    knownUsers = new List<User>();
+
                 //create a new user to begin writing to.
                 knownUsers.Add(new User(Environment.UserName));
                 //then try again.
@@ -249,7 +258,7 @@ namespace drive_map_utility
 
         /// <summary>Updates the Users.json file, matches the user object to the current user drives and writes to file.
         /// </summary>
-        public void updateUsersJson()
+        public static void updateUsersJson()
         {
             //serialize json file from users
             List<User> allUsersFromFile = enumUsers();
@@ -260,6 +269,7 @@ namespace drive_map_utility
             {
                 //no user exists; create one
                 allUsersFromFile.Add(new User(Environment.UserName));
+                currentUserIndex = getIndexofCurrentlyLoggedInUser();
             }
 
             //edit the User Object

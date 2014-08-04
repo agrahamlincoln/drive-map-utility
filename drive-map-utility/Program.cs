@@ -17,20 +17,23 @@ namespace drive_map_utility
         [STAThread]
         static void Main()
         {
+            //find all known shares that are not mapped
+            if (Local.userDrives.Count > 0)
+            {
+                List<NetworkDrive> sharesToBeMapped = Local.getMappedStatus(Local.userDrives, false);
+
+                //attempt to map shares without passwords
+                mapList(sharesToBeMapped);
+
+                //prompt user for remaining share logins
+                sharesToBeMapped = Local.getMappedStatus(Local.userDrives, false);
+            }
+
+            //prompt for password and then map shares.
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());
-
-            //find all known shares that are not mapped
-            List<NetworkDrive> sharesToBeMapped = Local.getMappedStatus(Local.userDrives, false);
-
-            //attempt to map shares without passwords
-            mapList(sharesToBeMapped);
-            
-            //prompt user for remaining share logins
-            sharesToBeMapped = Local.getMappedStatus(Local.userDrives, false);
-
-            //prompt for password and then map shares.
         }
 
         #region utilities

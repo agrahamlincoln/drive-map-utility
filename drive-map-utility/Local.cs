@@ -166,6 +166,15 @@ namespace drive_map_utility
             return mappedDrives;
         }
 
+        /// <summary>Removes a specific object from the currently mapped drives list.
+        /// </summary>
+        /// <param name="driveLetter">Drive to remove from list.</param>
+        public static void unmapDrive(string driveLetter)
+        {
+            int indexof = currentlyMappedDrives.FindIndex(drive => Utilities.matchString_IgnoreCase(drive.LocalDrive, driveLetter));
+            currentlyMappedDrives.RemoveAt(indexof);
+        }
+
         /// <summary>Checks whether this network drive is mapped or not.
         /// </summary>
         /// <param name="drive">Network Drive to check.</param>
@@ -175,9 +184,10 @@ namespace drive_map_utility
             // Checks to see if the current drive is mapped already
             bool isMapped = false;
 
-            foreach (NetworkDrive currentDrive in currentlyMappedDrives)
-                if (drive.ShareName.Equals(currentDrive.ShareName))
-                    isMapped = true;
+            NetworkDrive foundObject;
+            foundObject = currentlyMappedDrives.Find(mappedDrive => Utilities.matchString_IgnoreCase(mappedDrive.ShareName, drive.ShareName));
+            if (foundObject != null)
+                isMapped = true;
 
             return isMapped;
         }
@@ -205,6 +215,39 @@ namespace drive_map_utility
         #endregion
 
         #region Drive Letters
+
+        /// <summary>Verifies and returns a completely valid drive letter.
+        /// </summary>
+        /// <param name="driveLetter">Drive Letter to verify</param>
+        /// <returns>A valid drive letter, either the next available, the current or CharAt(1) if there are no available drive letters.</returns>
+        public static char driveLetterVerify(string driveLetter)
+        {
+            char validLetter = Convert.ToChar(1);
+            char passedLetter;
+
+            //1. Attempt to parse a drive letter from the string.
+            try
+            {
+                passedLetter = Utilities.parseSingleLetter(driveLetter);
+            }
+            catch (ArgumentException)
+            {
+                //Failed to find a drive letter from this string
+                //Return the first capital letter in the alphabet.
+                passedLetter = 'A';
+            }
+
+            //Get the next available drive letter
+            try
+            {
+                validLetter = getNextAvailableDriveLetter(passedLetter);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not find any available/valid drive letters.\nCall Stack: " + e.ToString());
+            }
+            return validLetter;
+        }
 
         /// <summary>Lists all available Drive Letters on this machine</summary>
         /// <returns> char List -- All Available drive letters on this machine</returns>

@@ -53,6 +53,7 @@
             this.passwordTxtBox = new System.Windows.Forms.TextBox();
             this.usernameTxtBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.refreshButton = new System.Windows.Forms.Button();
             this.statusBar.SuspendLayout();
             this.formOutline.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -315,11 +316,22 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Login";
             // 
+            // refreshButton
+            // 
+            this.refreshButton.Location = new System.Drawing.Point(344, 29);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(75, 23);
+            this.refreshButton.TabIndex = 11;
+            this.refreshButton.Text = "Refresh";
+            this.refreshButton.UseVisualStyleBackColor = true;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(490, 442);
+            this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.formOutline);
@@ -368,6 +380,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Button mapDrivesButton;
         private System.Windows.Forms.Button unmapDrivesButton;
+        private System.Windows.Forms.Button refreshButton;
     }
 }
 

@@ -109,9 +109,12 @@ namespace drive_map_utility
         /// <returns>string of the entire file</returns>
         public static string readFile(string fullPath)
         {
+            string str;
             //Read json from file on network
             StreamReader file = new StreamReader(fullPath);
-            return file.ReadToEnd();
+            str = file.ReadToEnd();
+            file.Close();
+            return str;
         }
     }
 }

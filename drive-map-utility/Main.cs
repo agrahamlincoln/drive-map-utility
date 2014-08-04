@@ -10,12 +10,16 @@ using System.Windows.Forms;
 
 namespace drive_map_utility
 {
+    /// <summary>Main form that allows for fileshare operations.
+    /// </summary>
     public partial class Main : Form
     {
 
         //Instantiate all program-level objects
         private FormMediator _formMediator;
 
+        /// <summary>Constructor for this form
+        /// </summary>
         public Main()
         {
             InitializeComponent();
@@ -23,6 +27,8 @@ namespace drive_map_utility
             populateListBoxes();
         }
 
+        /// <summary>Overloaded Refresh method, will re-populate the listboxes on form refresh.
+        /// </summary>
         public override void Refresh()
         {
             populateListBoxes();
@@ -30,6 +36,11 @@ namespace drive_map_utility
         }
 
         #region Form Controls
+
+        private void refreshButton_Click(object sender, EventArgs e)
+        {
+            Refresh();
+        }
 
         private void updateListsButton_Click(object sender, EventArgs e)
         {
@@ -136,6 +147,7 @@ namespace drive_map_utility
                 try
                 {
                     drive.UnMapDrive();
+                    Local.unmapDrive(drive.LocalDrive);
                 }
                 catch (Win32Exception e)
                 {
@@ -192,6 +204,7 @@ namespace drive_map_utility
                 }
             }
 
+            json.updateUsersJson();
             return driveList;
         }
 
@@ -252,6 +265,12 @@ namespace drive_map_utility
             List<string> mappedShares = new List<string>();
             List<string> unmappedShares = new List<string>();
 
+            //Add Drives from computer
+            foreach (NetworkDrive mapped in Local.currentlyMappedDrives)
+            {
+                mappedShares.Add(mapped.LocalDrive + " " + mapped.ShareName);
+            }
+
             //Add Drives from JSON
             NetworkDrive matched = null;
             if (Local.userDrives != null)
@@ -262,7 +281,8 @@ namespace drive_map_utility
                     if (Local.hasMapping(share))
                     {
                         matched = Local.currentlyMappedDrives.Find(item => item.ShareName == share.ShareName);
-                        mappedShares.Add(matched.LocalDrive + " " + share.ShareName);
+                        if (!Local.currentlyMappedDrives.Exists(item => item.ShareName == share.ShareName))
+                            mappedShares.Add(matched.LocalDrive + " " + share.ShareName);
                     }
                     else
                         unmappedShares.Add(share.LocalDrive + " " + share.ShareName);
@@ -273,12 +293,6 @@ namespace drive_map_utility
                 Utilities.writeLog("Error: No user drives found.");
                 mappedShares.Add("No drives found from json.");
                 unmappedShares.Add("No drives found from json.");
-            }
-
-            //Add Drives from computer
-            foreach (NetworkDrive mapped in Local.currentlyMappedDrives)
-            {
-                mappedShares.Add(mapped.LocalDrive + " " + mapped.ShareName);
             }
 
             mappedList.Items.Clear();
@@ -299,6 +313,8 @@ namespace drive_map_utility
         {
 
         }
+
+
 
 
 
