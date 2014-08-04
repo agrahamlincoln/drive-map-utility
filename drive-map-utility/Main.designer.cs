@@ -31,12 +31,15 @@
             this.knownList = new System.Windows.Forms.ListBox();
             this.mappedList = new System.Windows.Forms.ListBox();
             this.statusBar = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.formOutline = new System.Windows.Forms.GroupBox();
+            this.mapDrivesButton = new System.Windows.Forms.Button();
+            this.unmapDrivesButton = new System.Windows.Forms.Button();
             this.unmapAll_btn = new System.Windows.Forms.Button();
             this.mapAll_btn = new System.Windows.Forms.Button();
             this.addNewButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.mapSharesButton = new System.Windows.Forms.Button();
+            this.updateListsButton = new System.Windows.Forms.Button();
             this.removeFromMappedList = new System.Windows.Forms.Button();
             this.addToMappedList = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -50,7 +53,6 @@
             this.passwordTxtBox = new System.Windows.Forms.TextBox();
             this.usernameTxtBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusBar.SuspendLayout();
             this.formOutline.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -77,19 +79,28 @@
             // 
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusBar.Location = new System.Drawing.Point(0, 398);
+            this.statusBar.Location = new System.Drawing.Point(0, 420);
             this.statusBar.Name = "statusBar";
             this.statusBar.Size = new System.Drawing.Size(490, 22);
             this.statusBar.TabIndex = 2;
             this.statusBar.Text = "statusStrip1";
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
+            // 
             // formOutline
             // 
+            this.formOutline.Controls.Add(this.mapDrivesButton);
+            this.formOutline.Controls.Add(this.unmapDrivesButton);
             this.formOutline.Controls.Add(this.unmapAll_btn);
             this.formOutline.Controls.Add(this.mapAll_btn);
             this.formOutline.Controls.Add(this.addNewButton);
             this.formOutline.Controls.Add(this.label2);
-            this.formOutline.Controls.Add(this.mapSharesButton);
+            this.formOutline.Controls.Add(this.updateListsButton);
             this.formOutline.Controls.Add(this.removeFromMappedList);
             this.formOutline.Controls.Add(this.addToMappedList);
             this.formOutline.Controls.Add(this.label1);
@@ -98,10 +109,30 @@
             this.formOutline.ForeColor = System.Drawing.Color.Black;
             this.formOutline.Location = new System.Drawing.Point(21, 135);
             this.formOutline.Name = "formOutline";
-            this.formOutline.Size = new System.Drawing.Size(448, 249);
+            this.formOutline.Size = new System.Drawing.Size(448, 277);
             this.formOutline.TabIndex = 3;
             this.formOutline.TabStop = false;
             this.formOutline.Text = "Username";
+            // 
+            // mapDrivesButton
+            // 
+            this.mapDrivesButton.Location = new System.Drawing.Point(110, 217);
+            this.mapDrivesButton.Name = "mapDrivesButton";
+            this.mapDrivesButton.Size = new System.Drawing.Size(91, 23);
+            this.mapDrivesButton.TabIndex = 10;
+            this.mapDrivesButton.Text = "Map Drives";
+            this.mapDrivesButton.UseVisualStyleBackColor = true;
+            this.mapDrivesButton.Click += new System.EventHandler(this.mapDrivesButton_Click);
+            // 
+            // unmapDrivesButton
+            // 
+            this.unmapDrivesButton.Location = new System.Drawing.Point(254, 217);
+            this.unmapDrivesButton.Name = "unmapDrivesButton";
+            this.unmapDrivesButton.Size = new System.Drawing.Size(91, 23);
+            this.unmapDrivesButton.TabIndex = 9;
+            this.unmapDrivesButton.Text = "Unmap Drives";
+            this.unmapDrivesButton.UseVisualStyleBackColor = true;
+            this.unmapDrivesButton.Click += new System.EventHandler(this.unmapDrivesButton_Click);
             // 
             // unmapAll_btn
             // 
@@ -130,9 +161,9 @@
             // addNewButton
             // 
             this.addNewButton.ForeColor = System.Drawing.Color.Black;
-            this.addNewButton.Location = new System.Drawing.Point(254, 217);
+            this.addNewButton.Location = new System.Drawing.Point(351, 217);
             this.addNewButton.Name = "addNewButton";
-            this.addNewButton.Size = new System.Drawing.Size(184, 23);
+            this.addNewButton.Size = new System.Drawing.Size(87, 23);
             this.addNewButton.TabIndex = 6;
             this.addNewButton.Text = "Add New";
             this.addNewButton.UseVisualStyleBackColor = true;
@@ -150,16 +181,16 @@
             this.label2.Text = "Unmapped Fileshares";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // mapSharesButton
+            // updateListsButton
             // 
-            this.mapSharesButton.ForeColor = System.Drawing.Color.Black;
-            this.mapSharesButton.Location = new System.Drawing.Point(10, 217);
-            this.mapSharesButton.Name = "mapSharesButton";
-            this.mapSharesButton.Size = new System.Drawing.Size(191, 23);
-            this.mapSharesButton.TabIndex = 3;
-            this.mapSharesButton.Text = "Map Shares";
-            this.mapSharesButton.UseVisualStyleBackColor = true;
-            this.mapSharesButton.Click += new System.EventHandler(this.mapSharesButton_Click);
+            this.updateListsButton.ForeColor = System.Drawing.Color.Black;
+            this.updateListsButton.Location = new System.Drawing.Point(110, 246);
+            this.updateListsButton.Name = "updateListsButton";
+            this.updateListsButton.Size = new System.Drawing.Size(235, 23);
+            this.updateListsButton.TabIndex = 3;
+            this.updateListsButton.Text = "Map + Unmap Drives";
+            this.updateListsButton.UseVisualStyleBackColor = true;
+            this.updateListsButton.Click += new System.EventHandler(this.updateListsButton_Click);
             // 
             // removeFromMappedList
             // 
@@ -284,18 +315,11 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Login";
             // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
-            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(490, 420);
+            this.ClientSize = new System.Drawing.Size(490, 442);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.formOutline);
@@ -325,7 +349,7 @@
         private System.Windows.Forms.GroupBox formOutline;
         private System.Windows.Forms.Button addNewButton;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button mapSharesButton;
+        private System.Windows.Forms.Button updateListsButton;
         private System.Windows.Forms.Button removeFromMappedList;
         private System.Windows.Forms.Button addToMappedList;
         private System.Windows.Forms.Label label1;
@@ -342,6 +366,8 @@
         private System.Windows.Forms.Button unmapAll_btn;
         private System.Windows.Forms.Button mapAll_btn;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Button mapDrivesButton;
+        private System.Windows.Forms.Button unmapDrivesButton;
     }
 }
 

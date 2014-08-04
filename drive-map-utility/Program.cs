@@ -56,5 +56,54 @@ namespace drive_map_utility
             AppSettingsReader appConfig = new AppSettingsReader();
             return appConfig.GetValue(customKey, typeof(string)).ToString();
         }
+
+
+        /// <summary>Maps a list of network drives (No Credentials)
+        /// </summary>
+        /// <param name="listOfDrives">List of Network Drives to be mapped</param>
+        public static void mapList(List<NetworkDrive> listOfDrives)
+        {
+            foreach (NetworkDrive drive in listOfDrives)
+            {
+                // Ask for credentials to have access to the drive
+                //drive.PromptForCredentials = true;
+                if (Local.isDriveLetterAvailable(drive.LocalDrive))
+                {
+                    drive.MapDrive();
+                }
+                else
+                {
+                    drive.LocalDrive = Local.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
+                    drive.MapDrive();
+                }
+            }
+        }
+
+        /// <summary>Maps a list of network drives (Password Provided)
+        /// </summary>
+        /// <param name="listOfDrives">List of Network Drives to be mapped.</param>
+        /// <param name="password">Password Provided</param>
+        public static void mapList(List<NetworkDrive> listOfDrives, string password)
+        {
+            foreach (NetworkDrive drive in listOfDrives)
+            {
+                // Takes in the password
+                drive.MapDrive(password);
+            }
+        }
+
+        /// <summary>Maps a list of network drives (Credentials Provided)
+        /// </summary>
+        /// <param name="listOfDrives">List of Network Drives to be mapped.</param>
+        /// <param name="username">username provided</param>
+        /// <param name="password">password provided</param>
+        public static void mapList(List<NetworkDrive> listOfDrives, string username, string password)
+        {
+            foreach (NetworkDrive drive in listOfDrives)
+            {
+                // Takes in the username and password
+                drive.MapDrive(username, password);
+            }
+        }
     }
 }

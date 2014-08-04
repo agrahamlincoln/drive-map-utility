@@ -16,8 +16,8 @@ namespace drive_map_utility
     /// </remarks>
     class Local
     {
-        public static List<NetworkDrive> currentlyMappedDrives = getCurrentlyMappedDrives(); //to be moved into Local class
-        public static List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson(); //to be moved into Local class
+        public static List<NetworkDrive> currentlyMappedDrives = getCurrentlyMappedDrives();
+        public static List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson();
 
         /// <summary>Adds a Network Drive object to the current user's json object
         /// </summary>

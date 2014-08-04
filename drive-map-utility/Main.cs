@@ -28,11 +28,13 @@ namespace drive_map_utility
             populateListBoxes();
             base.Refresh();
         }
+
         #region Form Controls
 
-        private void mapSharesButton_Click(object sender, EventArgs e)
+        private void updateListsButton_Click(object sender, EventArgs e)
         {
-            updateDrives();
+            mapFromListBox(mappedList);
+            unmapFromListBox(knownList);
         }
 
         private void addToMappedList_Click(object sender, EventArgs e)
@@ -53,9 +55,15 @@ namespace drive_map_utility
             addNewForm.Show(this);
         }
 
+        private void mapDrivesButton_Click(object sender, EventArgs e)
+        {
+            mapFromListBox(mappedList);
+        }
+
         private void Main_closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            updateDrives();
+            mapFromListBox(mappedList);
+            unmapFromListBox(knownList);
         }
 
         private void mapAll_btn_Click(object sender, EventArgs e)
@@ -68,37 +76,64 @@ namespace drive_map_utility
             MoveAllItems(mappedList, knownList);
         }
 
+        private void unmapDrivesButton_Click(object sender, EventArgs e)
+        {
+            unmapFromListBox(knownList);
+        }
+
         #endregion
 
         #region Processes
 
-        private void updateDrives()
+        /// <summary>Takes all network drives from a ListBox object and unmaps them.
+        /// </summary>
+        /// <param name="listBox">listbox object to be unmapped</param>
+        private void unmapFromListBox(ListBox listBox)
         {
-            if (mappedList.Items.Count > 0)
-            {
-                //shared in the mapped list that are not mapped
-                List<NetworkDrive> needToBeMapped = convertListToNetworkDrive(mappedList, false);
-                //map and unmap the drives
-                if (usernameTxtBox.Text != "" && passwordTxtBox.Text != "")
-                    mapList(needToBeMapped, usernameTxtBox.Text, passwordTxtBox.Text);
-                else
-                    mapList(needToBeMapped);
-            }
-
-            if (knownList.Items.Count > 0)
+            //unmap all drives that are not in the list and are currently mapped
+            if (listBox.Items.Count > 0)
             {
                 //shares in the unmapped list that are mapped
-                List<NetworkDrive> needToBeUnmapped = convertListToNetworkDrive(knownList, true);
+                List<NetworkDrive> drivesFromList = enumerateSharesfromListBox(listBox);
+                List<NetworkDrive> needToBeUnmapped = getMappedStatus(drivesFromList, true);
                 unmapList(needToBeUnmapped);
             }
         }
 
-        private List<NetworkDrive> convertListToNetworkDrive(ListBox shareList, bool isMapped)
+        /// <summary>Takes all network drives from a ListBox object and maps them.
+        /// </summary>
+        /// <param name="listBox">listbox to be mapped</param>
+        private void mapFromListBox(ListBox listBox)
+        {
+            //map all drives that are in the list and arent curretly mapped.
+            if (listBox.Items.Count > 0)
+            {
+                List<NetworkDrive> drivesFromList = enumerateSharesfromListBox(listBox);
+                List<NetworkDrive> needToBeMapped = getMappedStatus(drivesFromList, false);
+                if (passwordTxtBox.Text == "" && usernameTxtBox.Text == "")
+                {
+                    Program.mapList(needToBeMapped);
+                }
+                else if (usernameTxtBox.Text == "")
+                {
+                    Program.mapList(needToBeMapped, passwordTxtBox.Text);
+                }
+                else
+                {
+                    Program.mapList(needToBeMapped, usernameTxtBox.Text, passwordTxtBox.Text);
+                }
+            }
+        }
+
+        /// <summary>Returns a list of Network Drives that are either mapped or unmapped, depending on parameter input
+        /// </summary>
+        /// <param name="driveList">Primary list of Network Drives.</param>
+        /// <param name="isMapped">Whether to return drives that are mapped or unmapped.</param>
+        /// <returns>List of network drives that are either mapped or unmapped. depending on parameter input.</returns>
+        private List<NetworkDrive> getMappedStatus(List<NetworkDrive> driveList, bool isMapped)
         {
             List<NetworkDrive> matchedDrives = new List<NetworkDrive>();
-
-            List<NetworkDrive> drivesFromListBox = enumerateSharesfromListBox(shareList);
-            foreach (NetworkDrive share in drivesFromListBox)
+            foreach (NetworkDrive share in driveList)
             {
                 //if the share matches the bool value currently mapped
                 if (Local.hasMapping(share) == isMapped)
@@ -110,41 +145,20 @@ namespace drive_map_utility
             return matchedDrives;
         }
 
+        /// <summary>Iterates through a list of NetworkDrives and unmaps them all.
+        /// </summary>
+        /// <param name="listOfDrives">List of Network DRives to unmap.</param>
         private void unmapList(List<NetworkDrive> listOfDrives)
         {
             foreach (NetworkDrive drive in listOfDrives)
                 drive.UnMapDrive();
         }
-
-        private void mapList(List<NetworkDrive> listOfDrives)
-        {
-            foreach (NetworkDrive drive in listOfDrives)
-            {
-                // Ask for credentials to have access to the drive
-                //drive.PromptForCredentials = true;
-                if (Local.isDriveLetterAvailable(drive.LocalDrive))
-                {
-                    drive.MapDrive();
-                }
-                else
-                {
-                    drive.LocalDrive = Local.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
-                    drive.MapDrive();
-                }
-            }
-        }
-        private void mapList(List<NetworkDrive> listOfDrives, string username, string password)
-        {
-            foreach (NetworkDrive drive in listOfDrives)
-            {
-                // Takes in the username and password
-                drive.MapDrive(username, password);
-            }
-        }
-
-        /** Get list of shares from listbox item
-         * Will retain the drive letter from the listbox if it is different than from json.
-         */
+        
+        /// <summary>Get list of shares from listbox item
+        /// <remarks>Will retain the drive letter from the listbox if it is different than from json.</remarks>
+        /// </summary>
+        /// <param name="shareList">ListBox item to get shares from</param>
+        /// <returns>List of network Drives parsed from ListBox</returns>
         private List<NetworkDrive> enumerateSharesfromListBox(ListBox shareList)
         {
             List<NetworkDrive> driveList = new List<NetworkDrive>();
@@ -225,22 +239,18 @@ namespace drive_map_utility
             this.Refresh();
         }
 
-        /* Get list of all network drives that are currently un-mapped */
+        /// <summary>Lists all network drives known to this user that are not currently mapped.
+        /// </summary>
+        /// <returns>List of network drives known to this user that are not currently mapped.</returns>
         private List<NetworkDrive> getUnmappedDrives()
         {
-            List<NetworkDrive> unmappedShares = new List<NetworkDrive>();
-            foreach (NetworkDrive share in Local.jsonCurrentUserDrives)
-            {
-                if (!Local.hasMapping(share))
-                {
-                    unmappedShares.Add(share);
-                }
-            }
-
-            return unmappedShares;
+            return getMappedStatus(Local.jsonCurrentUserDrives, false);
         }
 
-        /* Fills out listbox elements in form with unmapped and mapped drives */
+        /// <summary>Fills the two textboxes on the main form.
+        /// Left will be all shares currently mapped/to be mapped
+        /// Right will be all shares that are not mapped.
+        /// </summary>
         private void populateListBoxes()
         {
             List<string> mappedShares = new List<string>();
@@ -293,5 +303,9 @@ namespace drive_map_utility
         {
 
         }
+
+
+
+
     }
 }
