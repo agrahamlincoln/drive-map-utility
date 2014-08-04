@@ -147,7 +147,17 @@ namespace drive_map_utility
             try
             {
                 string jsonString = Utilities.readFile(USERS_JSON_FULL_FILEPATH);
-                users = JsonConvert.DeserializeObject<List<User>>(jsonString);
+                if (jsonString != "")
+                {
+                    users = JsonConvert.DeserializeObject<List<User>>(jsonString);
+                }
+                else
+                {
+                    //instantiate the object
+                    users = new List<User>();
+                    //add the current user.
+                    users.Add(new User(Environment.UserName));
+                }
             }
             catch
             {
@@ -283,7 +293,8 @@ namespace drive_map_utility
             //write json back to file (overwrite)
             string jsonString = JsonConvert.SerializeObject(allUsersFromFile);
             StreamWriter sWriter = new StreamWriter(USERS_JSON_FULL_FILEPATH);
-            sWriter.Write(jsonString, true);
+            sWriter.Write(jsonString);
+            sWriter.Close();
         }
 
         #endregion
