@@ -17,7 +17,7 @@ namespace drive_map_utility
     class Local
     {
         public static List<NetworkDrive> currentlyMappedDrives = getCurrentlyMappedDrives();
-        public static List<NetworkDrive> jsonCurrentUserDrives = json.getUserDrivesFromJson();
+        public static List<NetworkDrive> userDrives = json.getUserDrivesFromJson();
 
         /// <summary>Adds a Network Drive object to the current user's json object
         /// </summary>
@@ -32,7 +32,7 @@ namespace drive_map_utility
                 netDrive.LocalDrive = matched.LocalDrive;
             }
 
-            Local.jsonCurrentUserDrives.Add(netDrive);
+            Local.userDrives.Add(netDrive);
         }
 
 
@@ -152,7 +152,7 @@ namespace drive_map_utility
                 foreach (ManagementObject queryObj in searcher.Get())
                 {
                     //get information using WMI
-                    driveLetter = String.Format("{0}", queryObj["LocalName"]);
+                    driveLetter = String.Format("{0}", queryObj["LocalName"]).ToUpper();
                     fullPath = String.Format("{0}", queryObj["RemotePath"]);
 
                     //create new object storing information from WMI
@@ -180,6 +180,26 @@ namespace drive_map_utility
                     isMapped = true;
 
             return isMapped;
+        }
+
+        /// <summary>Returns a list of Network Drives that are either mapped or unmapped, depending on parameter input
+        /// </summary>
+        /// <param name="driveList">Primary list of Network Drives.</param>
+        /// <param name="isMapped">Whether to return drives that are mapped or unmapped.</param>
+        /// <returns>List of network drives that are either mapped or unmapped. depending on parameter input.</returns>
+        public static List<NetworkDrive> getMappedStatus(List<NetworkDrive> driveList, bool isMapped)
+        {
+            List<NetworkDrive> matchedDrives = new List<NetworkDrive>();
+            foreach (NetworkDrive share in driveList)
+            {
+                //if the share matches the bool value currently mapped
+                if (Local.hasMapping(share) == isMapped)
+                {
+                    matchedDrives.Add(share);
+                }
+            }
+
+            return matchedDrives;
         }
 
         #endregion
@@ -235,6 +255,10 @@ namespace drive_map_utility
                     availableLetter = Convert.ToChar(i);
                     break;
                 }
+            }
+            if (availableLetter == Convert.ToChar(1))
+            {
+                throw new Exception("Could not find an available drive letter");
             }
             return availableLetter;
         }

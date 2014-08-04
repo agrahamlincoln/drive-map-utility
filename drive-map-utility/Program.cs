@@ -20,6 +20,17 @@ namespace drive_map_utility
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());
+
+            //find all known shares that are not mapped
+            List<NetworkDrive> sharesToBeMapped = Local.getMappedStatus(Local.userDrives, false);
+
+            //attempt to map shares without passwords
+            mapList(sharesToBeMapped);
+            
+            //prompt user for remaining share logins
+            sharesToBeMapped = Local.getMappedStatus(Local.userDrives, false);
+
+            //prompt for password and then map shares.
         }
 
         #region utilities
@@ -73,8 +84,16 @@ namespace drive_map_utility
                 }
                 else
                 {
-                    drive.LocalDrive = Local.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
-                    drive.MapDrive();
+                    try
+                    {
+                        drive.LocalDrive = Local.getNextAvailableDriveLetter(drive.LocalDrive).ToString();
+                        drive.MapDrive();
+                    }
+                    catch (Exception e)
+                    {
+                        Utilities.writeLog(e.ToString());
+                    }
+                    
                 }
             }
         }

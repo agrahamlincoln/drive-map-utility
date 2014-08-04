@@ -67,7 +67,7 @@ namespace drive_map_utility
             // Adds the new share to current user drives and closes this form
             NetworkDrive selectedDrive = Program.findDriveInList(fullPathBox.Text, json.jsonKnownShares);
             selectedDrive.LocalDrive = driveLetterSelect.Text;
-            Local.jsonCurrentUserDrives.Add(selectedDrive);
+            Local.userDrives.Add(selectedDrive);
             this.Close();
         }
 

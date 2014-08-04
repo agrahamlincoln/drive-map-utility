@@ -263,7 +263,7 @@ namespace drive_map_utility
             }
 
             //edit the User Object
-            List<NetworkDrive> currentUserShares = Local.jsonCurrentUserDrives;
+            List<NetworkDrive> currentUserShares = Local.userDrives;
             foreach (NetworkDrive drive in currentUserShares)
             {
                 string shareID = drive.convertToIdentifier();

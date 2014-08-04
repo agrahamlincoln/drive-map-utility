@@ -95,7 +95,7 @@ namespace drive_map_utility
             {
                 //shares in the unmapped list that are mapped
                 List<NetworkDrive> drivesFromList = enumerateSharesfromListBox(listBox);
-                List<NetworkDrive> needToBeUnmapped = getMappedStatus(drivesFromList, true);
+                List<NetworkDrive> needToBeUnmapped = Local.getMappedStatus(drivesFromList, true);
                 unmapList(needToBeUnmapped);
             }
         }
@@ -109,7 +109,7 @@ namespace drive_map_utility
             if (listBox.Items.Count > 0)
             {
                 List<NetworkDrive> drivesFromList = enumerateSharesfromListBox(listBox);
-                List<NetworkDrive> needToBeMapped = getMappedStatus(drivesFromList, false);
+                List<NetworkDrive> needToBeMapped = Local.getMappedStatus(drivesFromList, false);
                 if (passwordTxtBox.Text == "" && usernameTxtBox.Text == "")
                 {
                     Program.mapList(needToBeMapped);
@@ -125,33 +125,23 @@ namespace drive_map_utility
             }
         }
 
-        /// <summary>Returns a list of Network Drives that are either mapped or unmapped, depending on parameter input
-        /// </summary>
-        /// <param name="driveList">Primary list of Network Drives.</param>
-        /// <param name="isMapped">Whether to return drives that are mapped or unmapped.</param>
-        /// <returns>List of network drives that are either mapped or unmapped. depending on parameter input.</returns>
-        private List<NetworkDrive> getMappedStatus(List<NetworkDrive> driveList, bool isMapped)
-        {
-            List<NetworkDrive> matchedDrives = new List<NetworkDrive>();
-            foreach (NetworkDrive share in driveList)
-            {
-                //if the share matches the bool value currently mapped
-                if (Local.hasMapping(share) == isMapped)
-                {
-                    matchedDrives.Add(share);
-                }
-            }
-
-            return matchedDrives;
-        }
-
         /// <summary>Iterates through a list of NetworkDrives and unmaps them all.
         /// </summary>
         /// <param name="listOfDrives">List of Network DRives to unmap.</param>
         private void unmapList(List<NetworkDrive> listOfDrives)
         {
             foreach (NetworkDrive drive in listOfDrives)
-                drive.UnMapDrive();
+            {
+                drive.Force = true;
+                try
+                {
+                    drive.UnMapDrive();
+                }
+                catch (Win32Exception e)
+                {
+                    Utilities.writeLog("Failed to unmap drive: " + drive.LocalDrive + " with the error " + e);
+                }
+            }
         }
         
         /// <summary>Get list of shares from listbox item
@@ -178,11 +168,17 @@ namespace drive_map_utility
                     folder = shareName.Split('\\')[3];
                     fullPath = "\\\\" + server + "\\" + folder;
                     driveLetter = shareName.Split(' ')[0];
-                    matched = Program.findDriveInList(fullPath, Local.jsonCurrentUserDrives);
+                    matched = Program.findDriveInList(fullPath, Local.userDrives);
                     if (matched == null)
                     {
                         //this drive is not known
-                        Utilities.writeLog("Error: Drive is not Known");
+                        Utilities.writeLog("Drive is not Known, creating a new object.");
+
+                        //creating new drive item
+                        matched = new NetworkDrive(driveLetter, fullPath);
+
+                        //add this to the current user drives list.
+                        Local.userDrives.Add(matched);
                     }
                     if (!driveLetter.Equals(matched.LocalDrive))
                     {
@@ -244,7 +240,7 @@ namespace drive_map_utility
         /// <returns>List of network drives known to this user that are not currently mapped.</returns>
         private List<NetworkDrive> getUnmappedDrives()
         {
-            return getMappedStatus(Local.jsonCurrentUserDrives, false);
+            return Local.getMappedStatus(Local.userDrives, false);
         }
 
         /// <summary>Fills the two textboxes on the main form.
@@ -258,9 +254,9 @@ namespace drive_map_utility
 
             //Add Drives from JSON
             NetworkDrive matched = null;
-            if (Local.jsonCurrentUserDrives != null)
+            if (Local.userDrives != null)
             {
-                foreach (NetworkDrive share in Local.jsonCurrentUserDrives)
+                foreach (NetworkDrive share in Local.userDrives)
                 {
                     //check if share is mapped, otherwise put in other list
                     if (Local.hasMapping(share))
