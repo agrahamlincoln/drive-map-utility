@@ -39,7 +39,6 @@
             this.mapAll_btn = new System.Windows.Forms.Button();
             this.addNewButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.updateListsButton = new System.Windows.Forms.Button();
             this.removeFromMappedList = new System.Windows.Forms.Button();
             this.addToMappedList = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -54,18 +53,22 @@
             this.usernameTxtBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.refreshButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.updateListsButton = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.statusBar.SuspendLayout();
             this.formOutline.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // knownList
             // 
             this.knownList.FormattingEnabled = true;
-            this.knownList.Location = new System.Drawing.Point(254, 38);
+            this.knownList.Location = new System.Drawing.Point(238, 38);
             this.knownList.Name = "knownList";
-            this.knownList.Size = new System.Drawing.Size(184, 173);
+            this.knownList.Size = new System.Drawing.Size(175, 173);
             this.knownList.TabIndex = 0;
             // 
             // mappedList
@@ -73,16 +76,16 @@
             this.mappedList.FormattingEnabled = true;
             this.mappedList.Location = new System.Drawing.Point(10, 38);
             this.mappedList.Name = "mappedList";
-            this.mappedList.Size = new System.Drawing.Size(191, 173);
+            this.mappedList.Size = new System.Drawing.Size(175, 173);
             this.mappedList.TabIndex = 1;
             // 
             // statusBar
             // 
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-            this.statusBar.Location = new System.Drawing.Point(0, 420);
+            this.statusBar.Location = new System.Drawing.Point(0, 363);
             this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(490, 22);
+            this.statusBar.Size = new System.Drawing.Size(570, 22);
             this.statusBar.TabIndex = 2;
             this.statusBar.Text = "statusStrip1";
             // 
@@ -95,50 +98,46 @@
             // 
             // formOutline
             // 
-            this.formOutline.Controls.Add(this.mapDrivesButton);
-            this.formOutline.Controls.Add(this.unmapDrivesButton);
-            this.formOutline.Controls.Add(this.unmapAll_btn);
-            this.formOutline.Controls.Add(this.mapAll_btn);
-            this.formOutline.Controls.Add(this.addNewButton);
             this.formOutline.Controls.Add(this.label2);
-            this.formOutline.Controls.Add(this.updateListsButton);
-            this.formOutline.Controls.Add(this.removeFromMappedList);
-            this.formOutline.Controls.Add(this.addToMappedList);
             this.formOutline.Controls.Add(this.label1);
             this.formOutline.Controls.Add(this.mappedList);
             this.formOutline.Controls.Add(this.knownList);
+            this.formOutline.Controls.Add(this.unmapAll_btn);
+            this.formOutline.Controls.Add(this.mapAll_btn);
+            this.formOutline.Controls.Add(this.addToMappedList);
+            this.formOutline.Controls.Add(this.removeFromMappedList);
             this.formOutline.ForeColor = System.Drawing.Color.Black;
-            this.formOutline.Location = new System.Drawing.Point(21, 135);
+            this.formOutline.Location = new System.Drawing.Point(12, 135);
             this.formOutline.Name = "formOutline";
-            this.formOutline.Size = new System.Drawing.Size(448, 277);
+            this.formOutline.Size = new System.Drawing.Size(424, 219);
             this.formOutline.TabIndex = 3;
             this.formOutline.TabStop = false;
             this.formOutline.Text = "Username";
             // 
             // mapDrivesButton
             // 
-            this.mapDrivesButton.Location = new System.Drawing.Point(110, 217);
+            this.mapDrivesButton.Location = new System.Drawing.Point(6, 144);
             this.mapDrivesButton.Name = "mapDrivesButton";
-            this.mapDrivesButton.Size = new System.Drawing.Size(91, 23);
+            this.mapDrivesButton.Size = new System.Drawing.Size(100, 23);
             this.mapDrivesButton.TabIndex = 10;
-            this.mapDrivesButton.Text = "Map Drives";
+            this.mapDrivesButton.Text = "Map All";
             this.mapDrivesButton.UseVisualStyleBackColor = true;
             this.mapDrivesButton.Click += new System.EventHandler(this.mapDrivesButton_Click);
             // 
             // unmapDrivesButton
             // 
-            this.unmapDrivesButton.Location = new System.Drawing.Point(254, 217);
+            this.unmapDrivesButton.Location = new System.Drawing.Point(6, 173);
             this.unmapDrivesButton.Name = "unmapDrivesButton";
-            this.unmapDrivesButton.Size = new System.Drawing.Size(91, 23);
+            this.unmapDrivesButton.Size = new System.Drawing.Size(100, 23);
             this.unmapDrivesButton.TabIndex = 9;
-            this.unmapDrivesButton.Text = "Unmap Drives";
+            this.unmapDrivesButton.Text = "Unmap All";
             this.unmapDrivesButton.UseVisualStyleBackColor = true;
             this.unmapDrivesButton.Click += new System.EventHandler(this.unmapDrivesButton_Click);
             // 
             // unmapAll_btn
             // 
             this.unmapAll_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.unmapAll_btn.Location = new System.Drawing.Point(207, 155);
+            this.unmapAll_btn.Location = new System.Drawing.Point(191, 154);
             this.unmapAll_btn.Name = "unmapAll_btn";
             this.unmapAll_btn.Size = new System.Drawing.Size(41, 23);
             this.unmapAll_btn.TabIndex = 8;
@@ -150,7 +149,7 @@
             // mapAll_btn
             // 
             this.mapAll_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mapAll_btn.Location = new System.Drawing.Point(207, 68);
+            this.mapAll_btn.Location = new System.Drawing.Point(191, 67);
             this.mapAll_btn.Name = "mapAll_btn";
             this.mapAll_btn.Size = new System.Drawing.Size(41, 23);
             this.mapAll_btn.TabIndex = 7;
@@ -162,9 +161,9 @@
             // addNewButton
             // 
             this.addNewButton.ForeColor = System.Drawing.Color.Black;
-            this.addNewButton.Location = new System.Drawing.Point(351, 217);
+            this.addNewButton.Location = new System.Drawing.Point(6, 267);
             this.addNewButton.Name = "addNewButton";
-            this.addNewButton.Size = new System.Drawing.Size(87, 23);
+            this.addNewButton.Size = new System.Drawing.Size(100, 23);
             this.addNewButton.TabIndex = 6;
             this.addNewButton.Text = "Add New";
             this.addNewButton.UseVisualStyleBackColor = true;
@@ -182,21 +181,10 @@
             this.label2.Text = "Unmapped Fileshares";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // updateListsButton
-            // 
-            this.updateListsButton.ForeColor = System.Drawing.Color.Black;
-            this.updateListsButton.Location = new System.Drawing.Point(110, 246);
-            this.updateListsButton.Name = "updateListsButton";
-            this.updateListsButton.Size = new System.Drawing.Size(235, 23);
-            this.updateListsButton.TabIndex = 3;
-            this.updateListsButton.Text = "Map + Unmap Drives";
-            this.updateListsButton.UseVisualStyleBackColor = true;
-            this.updateListsButton.Click += new System.EventHandler(this.updateListsButton_Click);
-            // 
             // removeFromMappedList
             // 
             this.removeFromMappedList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.removeFromMappedList.Location = new System.Drawing.Point(207, 126);
+            this.removeFromMappedList.Location = new System.Drawing.Point(191, 125);
             this.removeFromMappedList.Name = "removeFromMappedList";
             this.removeFromMappedList.Size = new System.Drawing.Size(41, 23);
             this.removeFromMappedList.TabIndex = 5;
@@ -208,7 +196,7 @@
             // addToMappedList
             // 
             this.addToMappedList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.addToMappedList.Location = new System.Drawing.Point(207, 97);
+            this.addToMappedList.Location = new System.Drawing.Point(191, 96);
             this.addToMappedList.Name = "addToMappedList";
             this.addToMappedList.Size = new System.Drawing.Size(41, 23);
             this.addToMappedList.TabIndex = 3;
@@ -233,7 +221,7 @@
             // 
             this.Title.AutoSize = true;
             this.Title.Font = new System.Drawing.Font("Cambria", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Title.Location = new System.Drawing.Point(277, 68);
+            this.Title.Location = new System.Drawing.Point(248, 68);
             this.Title.Name = "Title";
             this.Title.Size = new System.Drawing.Size(177, 32);
             this.Title.TabIndex = 4;
@@ -245,7 +233,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(490, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(570, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -309,7 +297,7 @@
             this.groupBox1.Controls.Add(this.usrnameLabel);
             this.groupBox1.Controls.Add(this.usernameTxtBox);
             this.groupBox1.Controls.Add(this.PasswdLabel);
-            this.groupBox1.Location = new System.Drawing.Point(21, 29);
+            this.groupBox1.Location = new System.Drawing.Point(12, 29);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(226, 100);
             this.groupBox1.TabIndex = 10;
@@ -318,20 +306,55 @@
             // 
             // refreshButton
             // 
-            this.refreshButton.Location = new System.Drawing.Point(344, 29);
+            this.refreshButton.Location = new System.Drawing.Point(6, 48);
             this.refreshButton.Name = "refreshButton";
-            this.refreshButton.Size = new System.Drawing.Size(75, 23);
+            this.refreshButton.Size = new System.Drawing.Size(100, 23);
             this.refreshButton.TabIndex = 11;
             this.refreshButton.Text = "Refresh";
             this.refreshButton.UseVisualStyleBackColor = true;
             this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(6, 296);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(100, 23);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "Delete";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // updateListsButton
+            // 
+            this.updateListsButton.ForeColor = System.Drawing.Color.Black;
+            this.updateListsButton.Location = new System.Drawing.Point(6, 202);
+            this.updateListsButton.Name = "updateListsButton";
+            this.updateListsButton.Size = new System.Drawing.Size(100, 23);
+            this.updateListsButton.TabIndex = 3;
+            this.updateListsButton.Text = "Smart Map";
+            this.updateListsButton.UseVisualStyleBackColor = true;
+            this.updateListsButton.Click += new System.EventHandler(this.updateListsButton_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.refreshButton);
+            this.groupBox2.Controls.Add(this.mapDrivesButton);
+            this.groupBox2.Controls.Add(this.unmapDrivesButton);
+            this.groupBox2.Controls.Add(this.updateListsButton);
+            this.groupBox2.Controls.Add(this.addNewButton);
+            this.groupBox2.Location = new System.Drawing.Point(442, 29);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(115, 325);
+            this.groupBox2.TabIndex = 12;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Controls";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(490, 442);
-            this.Controls.Add(this.refreshButton);
+            this.ClientSize = new System.Drawing.Size(570, 385);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.formOutline);
@@ -348,6 +371,7 @@
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -361,7 +385,6 @@
         private System.Windows.Forms.GroupBox formOutline;
         private System.Windows.Forms.Button addNewButton;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button updateListsButton;
         private System.Windows.Forms.Button removeFromMappedList;
         private System.Windows.Forms.Button addToMappedList;
         private System.Windows.Forms.Label label1;
@@ -381,6 +404,9 @@
         private System.Windows.Forms.Button mapDrivesButton;
         private System.Windows.Forms.Button unmapDrivesButton;
         private System.Windows.Forms.Button refreshButton;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button updateListsButton;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 
